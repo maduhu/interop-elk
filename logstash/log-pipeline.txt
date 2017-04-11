@@ -1,0 +1,18 @@
+input {
+  beats {
+    port => "5043"
+  }
+}
+filter {
+  # if the beat is from modusbox
+  grok {
+    match => { "message" => "\[%{TIMESTAMP_ISO8601:log_timestamp}\]%{SPACE}%{LOGLEVEL}%{SPACE}%{SYSLOG5424PRINTASCII}%{SPACE}%{PROG}%{SPACE}(.*traceID=)?(?<ilp_trace_id>\h{8}-\h{4}-\h{4}-\h{4}-\h{12})?.*"}
+  }
+  date {
+    match => ["log_timestamp", "ISO8601"]
+  }
+  # if the beat is from ripple
+}
+output {
+  stdout { codec => rubydebug }
+}
