@@ -21,9 +21,9 @@ javax.management.InstanceAlreadyExistsException: kafka.producer:type=app-info,id
         at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:267) [spring-beans-4.1.6.RELEASE.jar:4.1.6.RELEASE]
         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1139) [spring-beans-4.1.6.RELEASE.jar:4.1.6.RELEASE]
         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1042) [spring-beans-4.1.6.RELEASE.jar:4.1.6.RELEASE]
-[2017-04-06 18:55:03,031] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with traceID=71b6f748-0f29-45a0-802b-98e185b8f078 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
-[2017-04-06 18:55:03,549] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with traceID=fa31b451-5446-452a-9a7b-a58200896e15 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
-[2017-04-06 18:55:03,549] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with traceID=fa31b451-5446-452a-9a7b-a58200896e15 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
+[2017-04-06 18:55:03,031] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with L1P_TRACE_ID=71b6f748-0f29-45a0-802b-98e185b8f078 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
+[2017-04-06 18:55:03,549] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with L1P_TRACE_ID=fa31b451-5446-452a-9a7b-a58200896e15 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
+[2017-04-06 18:55:03,549] INFO  [[interop-domain].api-httpListenerConfig.worker.998] api-main: Received request with L1P_TRACE_ID=fa31b451-5446-452a-9a7b-a58200896e15 at path=/spsp/client/v1/setup, method=POST, Content-Type=application/json; charset=UTF-8, Authorization=null
 [2017-04-07 13:41:18,683] ERROR [[interop-domain].api-httpListenerConfig.worker.1074] MappingExceptionListener:
 ********************************************************************************
 Message               : /
