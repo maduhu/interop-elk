@@ -20,4 +20,22 @@ filter {
 }
 output {
   stdout { codec => rubydebug }
-}
+
+  if "metric" not in [tags] {
+    elasticsearch{
+      host => "fix_me"
+      cluster => "change_me"
+      protocol => "http"
+      index => "l1p_index_%{+YYYY.MM.dd}"
+      document_type => "l1p_log"
+    }
+  }
+#else if "metric" in [tags] {
+#      kafka {
+#        codec => plain {
+#           format => "%{message}"
+#        }
+#        topic_id => "mytopic"
+#      }
+#  }
+#}
