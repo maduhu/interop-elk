@@ -1,0 +1,4 @@
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_TIMER:[env.application-instanceid.timer.name][77]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_TIMER:[env.application-instanceid.timer.name][6]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_COUNTER:[env.application-instanceid.counter.name]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_GAUGE:[env.application-instanceid.counter.name][9]
