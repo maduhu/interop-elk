@@ -1,5 +1,8 @@
 [2017-03-09 03:51:11,392] INFO  [WrapperListener_start_runner] DefaultListableBeanFactory: Overriding bean definition for bean '.api-apiKitGlobalExceptionMapping:mapping.241': replacing [Root bean: class [org.mule.module.apikit.MappingExceptionListener]; scope=prototype; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [org.mule.module.apikit.MappingExceptionListener]; scope=prototype; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
 [2017-03-09 03:51:11,392] INFO  [WrapperListener_start_runner] XmlBeanDefinitionReader: Loading XML bean definitions from URL [file:/opt/mule/mule-dfsp2/apps/interop-spsp-backend-services-0.1.12-SNAPSHOT/spsp-backend-services.xml]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_TIMER:[env.application-instanceid.timer.name][50]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_TIMER:[env.application-instanceid.timer.name][50]
+[2017-03-09 20:48:13,740] INFO  [metrics-logger-reporter-19-thread-1] metrics: L1P_METRIC_COUNTER:[env.application-instanceid.counter.name]
 [2017-03-09 19:48:13,423] INFO  [Mule.app.deployer.monitor.1.thread.1] ProducerConfig: ProducerConfig values:
         metric.reporters = []
         metadata.max.age.ms = 300000
