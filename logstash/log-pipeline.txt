@@ -15,22 +15,36 @@ filter {
     match => ["log_timestamp", "ISO8601"]
     remove_field => ["log_timestamp", "log_source"]
   }
+  if [counter_name] {
+    metrics {
+      meter => ["%{counter_name}"]
+      add_tag => ["metric", "counter"]
+    }
+  }
+  if [timer_name] {
+    metrics {
+      timer => ["%{timer_name}", "%{timer_value}"]
+      add_tag => ["metric", "timer"]
+    }
+  }
 
   # if the beat is from ripple
 }
 output {
   stdout { codec => rubydebug }
-
-  if "metric" not in [tags] {
-    elasticsearch{
-      host => "fix_me"
-      cluster => "change_me"
-      protocol => "http"
-      index => "l1p_index_%{+YYYY.MM.dd}"
-      document_type => "l1p_log"
-    }
+  file {
+      path => "/tmp/logstash-output.txt"
   }
-#else if "metric" in [tags] {
+#  if "metric" not in [tags] {
+#    elasticsearch{
+#      host => "fix_me"
+#      cluster => "change_me"
+#      protocol => "http"
+#      index => "l1p_index_%{+YYYY.MM.dd}"
+#      document_type => "l1p_log"
+#    }
+#  }
+##else if "metric" in [tags] {
 #      kafka {
 #        codec => plain {
 #           format => "%{message}"
@@ -38,4 +52,4 @@ output {
 #        topic_id => "mytopic"
 #      }
 #  }
-#}
+}
