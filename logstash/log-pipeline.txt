@@ -35,15 +35,15 @@ output {
   file {
       path => "/tmp/logstash-output.txt"
   }
-#  if "metric" not in [tags] {
-#    elasticsearch{
-#      host => "fix_me"
+  if "metric" not in [tags] {
+    elasticsearch{
 #      cluster => "change_me"
-#      protocol => "http"
-#      index => "l1p_index_%{+YYYY.MM.dd}"
-#      document_type => "l1p_log"
-#    }
-#  }
+      host => "172.31.45.96"
+      protocol => "http"
+      index => "l1p_index_%{+YYYY.MM.dd}"
+      document_type => "l1p_log"
+    }
+  }
 ##else if "metric" in [tags] {
 #      kafka {
 #        codec => plain {
