@@ -1,0 +1,4 @@
+2017-04-25T15:24:38+00:00 localhost dfsp-api[2616]: #033[37m15:24:38.138Z#033[39m #033[34mDEBUG#033[39m bulk : #033[35mrequest#033[39m #033[36mbulk.payment.getForProcessing#033[39m (#033[32mcontext#033[39m="http port")
+2017-04-25T15:53:54+00:00 localhost dfsp-ledger[2616]: #033[37m15:53:54.938Z#033[39m TRACE httpserver :  (#033[32mcontext#033[39m="httpserver port")
+2017-04-25T15:51:25+00:00 localhost ilp-connector[2616]: 2017-04-25T15:51:25.023Z ilp-routing:routing-tables debug bumping route ledgerA: levelone.dfsp2.  ledgerB: levelone.dfsp1.  nextHop: levelone.ist.dfsp1
+2017-04-25T15:56:32+00:00 localhost docker/central-ledger[2723]: 2017-04-25T15:56:32.811Z - #033[32minfo#033[39m: [api,root] http://1c1d5e390382:3001: #033[1;32mget#033[0m /health   #033[32m200#033[0m (2ms)
