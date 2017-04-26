@@ -28,6 +28,9 @@
         "l1p_service_id": {
           "type": "keyword"
         },
+        "l1p_environment": {
+          "type": "keyword"
+        },
         "beat": {
           "properties": {
             "hostname": {
