@@ -1,8 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import DiagramControls from './DiagramControls';
-import DiagramCursor from './DiagramCursor';
 import ExampleResponse from './example_response.json';
-// import * as d3 from 'd3';
 import './Diagram.css';
 
 const MARGIN_TOP = 0;
@@ -21,7 +19,7 @@ class DiagramNode extends PureComponent {
     const textY = (height / 2) - (Math.max(24, 17 * (text.length - 1)));
 
     return (
-      <g className={className} transform={`translate(${x}, ${y})`}>
+      <g className={`node node--${className}`} transform={`translate(${x}, ${y})`}>
         <rect fill="#fff" stroke="#000" width={BOX_WIDTH} height={height} x="0" y="0" />
         <text textAnchor="middle" y={textY}>
           {text.map((t, i) => <tspan key={i} x={BOX_WIDTH / 2} dy="20">{t}</tspan>)}
@@ -42,7 +40,7 @@ class LineAnnotation extends PureComponent {
     const height = 10 + (text.length * 20);
 
     return (
-      <g className={className} transform={`translate(${x}, ${y})`}>
+      <g className={`annotation annotation--${className}`} transform={`translate(${x}, ${y})`}>
         <rect fill="#ffffff" stroke="#000" width={width} height={height} x="0" y="0" rx="15" ry="15" />
         <text textAnchor="middle" y={textY} fontSize={12}>
           {text.map((t, i) => <tspan key={i} x={width / 2} dy="20">{t}</tspan>)}
@@ -73,7 +71,7 @@ class Line extends PureComponent {
     }
 
     return (
-      <g className={className}>
+      <g className={`line line--${className}`}>
         <path d={path} stroke="#000" strokeWidth={2} fillOpacity="0" markerEnd="url(#arrow)" strokeDasharray={sda} />
       </g>
     );
@@ -124,12 +122,12 @@ class PayerDiagram extends PureComponent {
 
         {/* DFSP Logic to DFSP Directory Gateway */}
         <Line
-          className="l--payer-dfsp-logic-to-payer-interop-dfsp-directory"
+          className="payer-dfsp-logic-lookup"
           path={[{ x: 50, y: 160 }, { x: 50, y: 90 }, { x: 240, y: 90 }]}
         />
 
         <LineAnnotation
-          className="la---payer-dfsp-logic-to-payer-interop-dfsp-directory"
+          className="payer-dfsp-logic-lookup"
           x="105"
           y="75"
           width="100"
@@ -138,12 +136,12 @@ class PayerDiagram extends PureComponent {
 
         {/* DFSP Directory Gateway to Central Directory */}
         <Line
-          className="l--payer-interop-dfsp-directory-to-central-directory"
+          className="payer-interop-dfsp-directory-lookup"
           path={[{ x: 320, y: 80 }, { x: 690, y: 80 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-dfsp-directory-to-central-directory"
+          className="payer-interop-dfsp-directory-lookup"
           x="330"
           y="65"
           width="120"
@@ -152,12 +150,12 @@ class PayerDiagram extends PureComponent {
 
         {/* Payer DFSP Directory Gateway to Payee Interop Scheme Adapter */}
         <Line
-          className="l--payer-interop-dfsp-directory-to-payee-interop-scheme-adapter"
+          className="payer-interop-dfsp-directory-payee-details"
           path={[{ x: 320, y: 130 }, { x: 1150, y: 130 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-dfsp-directory-to-payee-interop-scheme-adapter"
+          className="payer-interop-dfsp-directory-payee-details"
           x="330"
           y="115"
           width="120"
@@ -166,12 +164,12 @@ class PayerDiagram extends PureComponent {
 
         {/* Payer Interop Scheme Adatper to Payee Interop Scheme Adapter */}
         <Line
-          className="l--payer-interop-scheme-adapter-to-payee-interop-scheme-adapter"
+          className="payer-interop-scheme-adapter-quote-fees"
           path={[{ x: 320, y: 170 }, { x: 1150, y: 170 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-scheme-adapter-to-payee-interop-scheme-adapter"
+          className="payer-interop-scheme-adapter-to-quote-fees"
           x="330"
           y="155"
           width="120"
@@ -179,13 +177,14 @@ class PayerDiagram extends PureComponent {
         />
 
         {/* DFSP Logic to Interop Scheme Adapter (quote fees and route) */}
+        {/* TODO: modify className so it can have quote-fees and quote-route */}
         <Line
-          className="l--payer-dfsp-logic-to-payer-interop-scheme-adapter"
+          className="payer-dfsp-logic-quote"
           path={[{ x: 90, y: 220 }, { x: 240, y: 220 }]}
         />
 
         <LineAnnotation
-          className="la--payer-dfsp-logic-to-payer-interop-scheme-adapter-quote"
+          className="payer-dfsp-logic-quote"
           x="105"
           y="195"
           width="110"
@@ -194,12 +193,12 @@ class PayerDiagram extends PureComponent {
 
         {/* DFSP Logic to Interop Scheme Adapter (payment) */}
         <Line
-          className="l--payer-dfsp-logic-to-payer-interop-scheme-adapter-payment"
+          className="payer-dfsp-logic-payment"
           path={[{ x: 90, y: 320 }, { x: 240, y: 320 }]}
         />
 
         <LineAnnotation
-          className="la--payer-dfsp-logic-to-payer-interop-scheme-adapter-payment"
+          className="payer-dfsp-logic-payment"
           x="105"
           y="305"
           width="110"
@@ -208,12 +207,12 @@ class PayerDiagram extends PureComponent {
 
         {/* Interop Scheme Adapter to ILP Service */}
         <Line
-          className="l--payer-interop-scheme-adapter-to-payer-ilp-service"
+          className="payer-interop-scheme-adapter-quote-route"
           path={[{ x: 320, y: 220 }, { x: 460, y: 220 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-scheme-adapter-to-payer-ilp-service"
+          className="payer-interop-scheme-adapter-quote-route"
           x="330"
           y="205"
           width="100"
@@ -222,12 +221,12 @@ class PayerDiagram extends PureComponent {
 
         {/* Interop Scheme Adapter to ILP Client */}
         <Line
-          className="l--payer-interop-scheme-adapter-to-payer-ilp-client"
+          className="payer-interop-scheme-adapter-payment"
           path={[{ x: 320, y: 300 }, { x: 460, y: 300 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-scheme-adapter-to-payer-ilp-client"
+          className="payer-interop-scheme-adapter-payment"
           x="335"
           y="285"
           width="90"
@@ -235,14 +234,15 @@ class PayerDiagram extends PureComponent {
         />
 
         {/* Interop ILP Adapter to ILP Client (notify) */}
+        {/* TODO: verify that it's ok to highlight both notification arrows at the same time */}
         <Line
-          className="l--payer-interop-ilp-ledger-to-payer-ilp-client"
+          className="payer-interop-ilp-ledger-notify"
           path={[{ x: 240, y: 480 }, { x: 460, y: 310 }]}
           dashed
         />
 
         <LineAnnotation
-          className="la--payer-interop-ilp-ledger-to-payer-ilp-client"
+          className="payer-interop-ilp-ledger-notify"
           x="250"
           y="365"
           width="145"
@@ -251,12 +251,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Client to Interop ILP Adapter */}
         <Line
-          className="l--payer-ilp-client-to-payer-interop-ilp-ledger"
+          className="payer-ilp-client-to-payment-prepare"
           path={[{ x: 460, y: 370 }, { x: 320, y: 480 }]}
         />
 
         <LineAnnotation
-          className="la--payer-ilp-client-to-payer-interop-ilp-ledger"
+          className="payer-ilp-client-payment-prepare"
           x="320"
           y="425"
           width="145"
@@ -265,12 +265,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Client to ILP connector */}
         <Line
-          className="l--payer-ilp-client-to-payer-ilp-connector"
+          className="payer-ilp-client-quote-route"
           path={[{ x: 500, y: 370 }, { x: 500, y: 480 }]}
         />
 
         <LineAnnotation
-          className="la--payer-ilp-client-to-payer-ilp-connector"
+          className="payer-ilp-client-quote-route"
           x="445"
           y="380"
           width="110"
@@ -279,12 +279,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Connector to ILP Ledger Adapter */}
         <Line
-          className="l--payer-ilp-connector-to-payer-interop-ilp-ledger"
+          className="payer-ilp-connector-payment-fulfill"
           path={[{ x: 460, y: 500 }, { x: 320, y: 500 }]}
         />
 
         <LineAnnotation
-          className="l--payer-ilp-connector-to-payer-interop-ilp-ledger"
+          className="payer-ilp-connector-payment-fullfill"
           x="355"
           y="475"
           width="90"
@@ -292,14 +292,15 @@ class PayerDiagram extends PureComponent {
         />
 
         {/* ILP Ledger Adapter to ILP Connector */}
+        {/* TODO: verify that it's ok to highlight both notification arrows at the same time */}
         <Line
-          className="l--payer-interop-ilp-ledger-to-payer-ilp-connector"
+          className="payer-interop-ilp-ledger-payment-notify"
           path={[{ x: 320, y: 570 }, { x: 460, y: 570 }]}
           dashed
         />
 
         <LineAnnotation
-          className="la--payer-interop-ilp-ledger-to-payer-ilp-connector"
+          className="payer-interop-ilp-ledger-payment-notify"
           x="335"
           y="545"
           width="90"
@@ -307,13 +308,17 @@ class PayerDiagram extends PureComponent {
         />
 
         {/* ILP Ledger Adapter to Ledger */}
+        {/*
+          TODO: allow multiple classNames so we can have payment-prepare and payment-fulfill OR just have multiple lines
+          and annotations for this.
+        */}
         <Line
-          className="l--payer-interop-ilp-ledger-to-payer-dfsp-ledger"
+          className="payer-interop-ilp-ledger-payment"
           path={[{ x: 240, y: 500 }, { x: 90, y: 500 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-ilp-ledger-to-payer-dfsp-ledger"
+          className="payer-interop-ilp-ledger-payment"
           x="135"
           y="475"
           width="70"
@@ -323,12 +328,12 @@ class PayerDiagram extends PureComponent {
 
         {/* Ledger to ILP Ledger Adapter */}
         <Line
-          className="l--payer-dfsp-ledger-to-payer-interop-ilp-ledger"
+          className="payer-dfsp-ledger-transfer-status"
           path={[{ x: 90, y: 600 }, { x: 240, y: 600 }]}
         />
 
         <LineAnnotation
-          className="la--payer-dfsp-ledger-to-payer-interop-ilp-ledger"
+          className="payer-dfsp-ledger-transfer-status"
           x="100"
           y="575"
           width="110"
@@ -337,12 +342,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Ledger Adapter to Central Ledger */}
         <Line
-          className="l--payer-interop-ilp-ledger-to-central-ledger"
+          className="payer-interop-ilp-ledger-transfer-status"
           path={[{ x: 280, y: 630 }, { x: 280, y: 660 }, { x: 730, y: 660 }, { x: 730, y: 630 }]}
         />
 
         <LineAnnotation
-          className="la--payer-interop-ilp-ledger-to-central-ledger"
+          className="payer-interop-ilp-ledger-transfer-status"
           x="310"
           y="645"
           width="160"
@@ -351,12 +356,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Connector to Central Ledger (quote route) */}
         <Line
-          className="l--payer-ilp-connector-to-central-ledger-quote"
+          className="payer-ilp-connector-quote-route"
           path={[{ x: 540, y: 500 }, { x: 690, y: 500 }]}
         />
 
         <LineAnnotation
-          className="la--payer-ilp-connector-to-central-ledger-quote"
+          className="payer-ilp-connector-quote-route"
           x="550"
           y="485"
           width="110"
@@ -365,12 +370,12 @@ class PayerDiagram extends PureComponent {
 
         {/* ILP Connector to Central Ledger (rest (prepare)) */}
         <Line
-          className="l--payer-ilp-connector-to-central-ledger-payment"
+          className="payer-ilp-connector-to-payment-prepare"
           path={[{ x: 540, y: 550 }, { x: 690, y: 550 }]}
         />
 
         <LineAnnotation
-          className="la--payer-ilp-connector-to-central-ledger-payment"
+          className="payer-ilp-connector-to-payment-prepare"
           x="550"
           y="535"
           width="110"
@@ -400,7 +405,7 @@ class CentralDiagram extends PureComponent {
         />
 
         <DiagramNode
-          className="central-ilp-ledger"
+          className="central-ledger"
           x="120"
           y="290"
           height="340"
@@ -537,30 +542,31 @@ class SectionBackgrounds extends PureComponent {
 class Diagram extends Component {
   constructor(props) {
     super(props);
-    this.updatePath = this.updatePath.bind(this);
-
     this.state = {
+      // data is the raw data from the server, we probably don't actually need to store it on state but we haven't
+      // implemented the server code for getting data quite yet.
       data: { ...ExampleResponse },
-      path: null,
+      // path is the processed data that
+      path: [
+        // TODO: modify className on Line and LineAnnotation so it can have quote-fees and quote-route
+        ['payer-dfsp-logic', 'quote'],
+        ['payer-interop-scheme-adapter', 'quote-route'],
+        ['payer-ilp-service', 'quote-route'],
+        ['payer-ilp-client', 'quote-route'],
+        ['payer-ilp-connector', 'quote-route'],
+      ],
     };
   }
 
-  updatePath(path) {
-    this.setState(() => ({ path }));
-  }
-
   render() {
-    /**
-     * Thoughts: using react to render base canvas seems like the best idea because it's static, then we can create a
-     * component that is just used to handle rendering and animating some sort of "cursor" object on the canvas. We can
-     * even use JSX to render the base canvas (and make parts of it dynamic if needed).
-     */
     const width = (DFSP_WIDTH * 2) + CENTRAL_WIDTH + (SECTION_MARGIN * 2);
     const height = 680;
     const zoom = this.props.zoom ? this.props.zoom : 1;
 
     return (
       <div className="architecture-diagram">
+        <DiagramControls {...this.props} path={this.state.path} />
+
         <svg className="diagram-canvas" width={width} height={height}>
           <defs>
             <marker
@@ -574,6 +580,18 @@ class Diagram extends Component {
             >
               <path d="M0,0 L0,6 L9,3 z" fill="#000" />
             </marker>
+
+            <marker
+              id="arrow--selected"
+              markerWidth="8"
+              markerHeight="8"
+              refX="8"
+              refY="3"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M0,0 L0,6 L9,3 z" fill="#060" />
+            </marker>
           </defs>
 
           <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
@@ -586,11 +604,7 @@ class Diagram extends Component {
 
             <PayeeDiagram />
           </g>
-
-          <DiagramCursor path={this.state.path} />
         </svg>
-
-        <DiagramControls {...this.props} data={this.state.data} />
       </div>
     );
   }

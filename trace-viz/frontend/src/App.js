@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Header from './Header';
+// import Header from './Header';
 import Diagram from './Diagram';
 import './App.css';
 
@@ -26,7 +26,7 @@ class App extends Component {
   render() {
     return (
       <div className="trace-viz-app">
-        <Header traceId={this.state.traceId} updateTraceId={this.updateTraceId} />
+        {/*<Header traceId={this.state.traceId} updateTraceId={this.updateTraceId} />*/}
         <Diagram traceId={this.state.traceId} data={this.state.traceData} />
       </div>
     );
