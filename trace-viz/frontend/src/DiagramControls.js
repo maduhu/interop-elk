@@ -72,14 +72,13 @@ class DiagramControls extends PureComponent {
 
   componentDidMount() {
     if (this.props.path !== null) {
-      console.log('Mounted with path, start playing');
       this.playPause();
     }
   }
 
   componentWillReceiveProps(props) {
     if (props.path !== this.props.path) {
-      console.log('Path changed, stop all animations, reset state, and start playing');
+      // Path changed, stop all animations, reset state, and start playing
       this.reset();
     }
   }
@@ -116,6 +115,11 @@ class DiagramControls extends PureComponent {
     }
   }
 
+  animateStep(step) {
+    const [node, action] = this.props.path[step];
+    animateNodeAndEdge(node, action, 400, STROKE_START, STROKE_END, FILL_START, FILL_END);
+  }
+
   back() {
     this.setState((state) => {
       if (state.step === null) {
@@ -133,11 +137,6 @@ class DiagramControls extends PureComponent {
 
       return { step };
     });
-  }
-
-  animateStep(step) {
-    const [node, action] = this.props.path[step];
-    animateNodeAndEdge(node, action, 400, STROKE_START, STROKE_END, FILL_START, FILL_END);
   }
 
   forward() {
