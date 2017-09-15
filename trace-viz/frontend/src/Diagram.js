@@ -207,8 +207,6 @@ class Diagram extends Component {
     const zoom = this.props.zoom ? this.props.zoom : 1;
     const isPlaying = this.state.loopId !== null;
 
-    console.log(isPlaying);
-
     return (
       <div className="architecture-diagram">
         <svg className="diagram-canvas" width={width} height={height}>
