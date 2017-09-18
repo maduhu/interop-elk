@@ -7,17 +7,18 @@ import SectionBackgrounds from './SectionBackgrounds';
 import TraceTable from './TraceTable';
 import * as d3 from 'd3';
 import ExampleResponse from './example_response.json';
-import { DFSP_WIDTH, CENTRAL_WIDTH, SECTION_MARGIN } from './constants';
+import {
+  DFSP_WIDTH,
+  CENTRAL_WIDTH,
+  SECTION_MARGIN,
+  FILL,
+  STROKE,
+  STROKE_START,
+  STROKE_END,
+  FILL_START,
+  FILL_END,
+} from './constants';
 import './Diagram.css';
-
-// TODO: move these to constants.js
-const STROKE = '#000';
-const FILL = '#fff';
-const STROKE_START = '#060';
-const STROKE_END = '#5C5';
-const FILL_START = '#7F7';
-const FILL_END = '#CFC';
-
 
 function animateEdge(node, action, duration, strokeStart) {
   const sel = d3.select(`.line--${node}-${action} path`);
