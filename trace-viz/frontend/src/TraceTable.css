@@ -1,0 +1,28 @@
+.trace-table {
+  margin: 1em 0;
+  border-spacing: 0.5rem;
+  table-layout: fixed;
+  width: 1460px;
+}
+.trace-table__header {
+  text-align: left;
+}
+.trace-table__row {
+  transition: background-color 400ms;
+}
+.trace-table__row--active {
+  background-color: rgba(120, 255, 120, 1);
+}
+.trace-table__col,
+.trace-table__header {
+  padding: 0.5rem;
+}
+.trace-table__header--env {
+  width: 200px;
+}
+.trace-table__header--svc {
+  width: 200px;
+}
+.trace-table__header--msg {
+
+}

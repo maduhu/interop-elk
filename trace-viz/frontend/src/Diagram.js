@@ -60,6 +60,22 @@ function animateNodeAndEdge(node, action, duration, strokeStart, strokeEnd, fill
   animateEdge(node, action, duration, strokeStart, strokeEnd);
 }
 
+function processData(data) {
+  /**
+   * processData extracts the information we need from an ElasticSearch query and converts it to a less verbose format.
+   */
+  return data.hits.hits.map((hit) => {
+    const source = hit._source; // eslint-disable-line no-underscore-dangle
+
+    return {
+      timestamp: new Date(source['@timestamp']),
+      environment: source.l1p_environment,
+      service: source.l1p_service_id,
+      message: source.message,
+    };
+  });
+}
+
 class Diagram extends Component {
   constructor(props) {
     super(props);
@@ -70,22 +86,22 @@ class Diagram extends Component {
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
     this.reset = this.reset.bind(this);
+    this.selectStep = this.selectStep.bind(this);
+
+    const fakePath = [
+      ['payer-dfsp-logic', 'quote'],
+      ['payer-interop-scheme-adapter', 'quote-route'],
+      ['payer-ilp-service', 'quote-route'],
+      ['payer-ilp-client', 'quote-route'],
+      ['payer-ilp-connector', 'quote-route'],
+    ];
+    const fakeData = processData(ExampleResponse).slice(0, fakePath.length);
 
     this.state = {
       step: null,
       loopId: null,
-      // data is the raw data from the server, we probably don't actually need to store it on state but we haven't
-      // implemented the server code for getting data quite yet.
-      data: { ...ExampleResponse },
-      // path is the processed data that
-      path: [
-        // TODO: modify className on Line and LineAnnotation so it can have quote-fees and quote-route
-        ['payer-dfsp-logic', 'quote'],
-        ['payer-interop-scheme-adapter', 'quote-route'],
-        ['payer-ilp-service', 'quote-route'],
-        ['payer-ilp-client', 'quote-route'],
-        ['payer-ilp-connector', 'quote-route'],
-      ],
+      data: fakeData, // TODO: actually query the ES server for data.
+      path: fakePath, // TODO: generate path based on data retrieved from ElasticSearch
     };
   }
 
@@ -202,6 +218,18 @@ class Diagram extends Component {
     }, this.reset);
   }
 
+  selectStep(step) {
+    this.setState((state) => {
+      // Only allow a user to select a step via click if we're not currently playing back the steps.
+      if (state.loopId === null) {
+        this.animateStep(step);
+        return { step };
+      }
+
+      return {};
+    });
+  }
+
   render() {
     const width = (DFSP_WIDTH * 2) + CENTRAL_WIDTH + (SECTION_MARGIN * 2);
     const height = 680;
@@ -258,7 +286,7 @@ class Diagram extends Component {
           forward={this.forward}
         />
 
-        <TraceTable step={this.state.step} path={this.state.path} data={this.state.data} />
+        <TraceTable step={this.state.step} path={this.state.path} data={this.state.data} selectStep={this.selectStep} />
       </div>
     );
   }
