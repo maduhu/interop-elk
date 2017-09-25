@@ -22,6 +22,9 @@
           },
           "ilp_trace_id": {
             "type": "keyword"
+          },  
+          "call_type": {
+            "type": "keyword"
           },
           "beat": {
             "properties": {
