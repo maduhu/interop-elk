@@ -31,6 +31,9 @@
         "l1p_environment": {
           "type": "keyword"
         },
+        "l1p_call_type": {
+          "type": "keyword"
+        },        
         "beat": {
           "properties": {
             "hostname": {
