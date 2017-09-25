@@ -23,7 +23,7 @@
           "ilp_trace_id": {
             "type": "keyword"
           },  
-          "call_type": {
+          "l1p_call_type": {
             "type": "keyword"
           },
           "beat": {
