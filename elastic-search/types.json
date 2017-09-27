@@ -20,7 +20,7 @@
           "@timestamp": {
             "type": "date"
           },
-          "ilp_trace_id": {
+          "l1p_trace_id": {
             "type": "keyword"
           },
           "l1p_call_type": {
