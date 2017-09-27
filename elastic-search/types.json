@@ -23,6 +23,9 @@
           "ilp_trace_id": {
             "type": "keyword"
           },
+          "l1p_call_type": {
+              "type": "keyword"
+          },
           "beat": {
             "properties": {
               "hostname": {
