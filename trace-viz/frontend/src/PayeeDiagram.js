@@ -15,9 +15,9 @@ class PayeeDiagram extends PureComponent {
           Payee DFSP
         </text>
 
-        <Node className="payee-dfsp-logic" x="460" y="80" height="270" text={['DFSP', 'Logic']} />
+        <Node name="payee-dfsp-logic" x="460" y="80" height="270" text={['DFSP', 'Logic']} />
 
-        <Node className="payee-dfsp-ledger" x="460" y="480" height="150" text={['Ledger']} />
+        <Node name="payee-dfsp-ledger" x="460" y="480" height="150" text={['Ledger']} />
 
         <Node
           className="payee-interop-scheme-adapter"
@@ -35,11 +35,11 @@ class PayeeDiagram extends PureComponent {
           text={['ILP', 'Ledger', 'Adapter']}
         />
 
-        <Node className="payee-ilp-service" x="10" y="200" height="80" text={['ILP', 'Service']} />
+        <Node name="payee-ilp-service" x="10" y="200" height="80" text={['ILP', 'Service']} />
 
-        <Node className="payee-ilp-client" x="10" y="290" height="80" text={['ILP', 'Client']} />
+        <Node name="payee-ilp-client" x="10" y="290" height="80" text={['ILP', 'Client']} />
 
-        <Node className="payee-ilp-connector" x="10" y="480" height="150" text={['ILP', 'Connector']} />
+        <Node name="payee-ilp-connector" x="10" y="480" height="150" text={['ILP', 'Connector']} />
 
         {/* Interop Scheme Adapter to DFSP Logic (payee details) */}
         <Line className="payee-interop-scheme-adapter-payee-details" path={[{ x: 320, y: 130 }, { x: 460, y: 130 }]} />

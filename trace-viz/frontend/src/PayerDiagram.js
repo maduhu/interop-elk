@@ -12,9 +12,9 @@ class PayerDiagram extends PureComponent {
           Payer DFSP
         </text>
 
-        <Node className="payer-dfsp-logic" x="10" y="160" height="200" text={['DFSP', 'Logic']} />
+        <Node name="payer-dfsp-logic" x="10" y="160" height="200" text={['DFSP', 'Logic']} />
 
-        <Node className="payer-dfsp-ledger" x="10" y="480" height="150" text={['Ledger']} />
+        <Node name="payer-dfsp-ledger" x="10" y="480" height="150" text={['Ledger']} />
 
         <Node
           className="payer-interop-dfsp-directory"
@@ -40,11 +40,11 @@ class PayerDiagram extends PureComponent {
           text={['ILP', 'Ledger', 'Adapter']}
         />
 
-        <Node className="payer-ilp-service" x="460" y="200" height="80" text={['ILP', 'Service']} />
+        <Node name="payer-ilp-service" x="460" y="200" height="80" text={['ILP', 'Service']} />
 
-        <Node className="payer-ilp-client" x="460" y="290" height="80" text={['ILP', 'Client']} />
+        <Node name="payer-ilp-client" x="460" y="290" height="80" text={['ILP', 'Client']} />
 
-        <Node className="payer-ilp-connector" x="460" y="480" height="150" text={['ILP', 'Connector']} />
+        <Node name="payer-ilp-connector" x="460" y="480" height="150" text={['ILP', 'Connector']} />
 
         {/* DFSP Logic to DFSP Directory Gateway */}
         <Line
