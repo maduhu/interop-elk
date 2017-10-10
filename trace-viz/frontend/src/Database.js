@@ -9,11 +9,12 @@ class Database extends PureComponent {
     const top = 20;
     const bottom = 60;
     const pathStr = [
-      `M ${left} ${top} C ${right * 0.02} ${top - curveY}, ${right * 0.98} ${top - curveY}, ${right} ${top}`,
-      `C ${right * 0.98} 40, ${right * 0.02} 40, ${left} ${top}`,
-      `L ${left}, ${bottom}`,
-      `C ${right * 0.02} ${bottom + curveY}, ${right * 0.98} ${bottom + curveY}, ${right} ${bottom}`,
-      `L ${right}, ${top}`,
+      `M ${left} ${top} `,
+      `C ${right * 0.02} ${top - curveY}, ${right * 0.98} ${top - curveY}, ${right} ${top} `,
+      `C ${right * 0.98} 40, ${right * 0.02} 40, ${left} ${top} `,
+      `L ${left}, ${bottom} `,
+      `C ${right * 0.02} ${bottom + curveY}, ${right * 0.98} ${bottom + curveY}, ${right} ${bottom} `,
+      `L ${right}, ${top} `,
     ].join('');
 
     return (
