@@ -257,7 +257,7 @@ class SimplifiedDiagram extends PureComponent {
         />
 
         <Annotation
-          name="payer-notify"
+          name="payer-notify-fulfillment"
           action={action}
           highlight={highlight}
           x={fourthColX}
@@ -300,7 +300,7 @@ class SimplifiedDiagram extends PureComponent {
         />
 
         <Annotation
-          name="payee-notify"
+          name="payee-notify-fulfillment"
           action={action}
           highlight={highlight}
           x={sixthColX}
