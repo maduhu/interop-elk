@@ -9,3 +9,26 @@
   top: 50%;
   transform: translateY(-50%);
 }
+.annotation rect,
+.node rect,
+.database path {
+  transition: fill 1s;
+}
+.color--lookup {
+  fill: #dcd0e5;
+}
+.color--quote {
+  fill: #fee3c6;
+}
+.color--prepare {
+  fill: #d3e6fc;
+}
+.color--fulfill {
+  fill: #cde6ce;
+}
+.color--annotation-inactive {
+  fill: #aaaaaa;
+}
+.color--node-inactive {
+  fill: #ffffff;
+}
