@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 
+const TEXT_Y = 55;
+
 class Database extends PureComponent {
   render() {
-    const { name, x, y } = this.props;
+    const { name, x, y, text } = this.props;
     const curveY = 20;
     const left = 0;
     const right = 80;
@@ -20,6 +22,9 @@ class Database extends PureComponent {
     return (
       <g className={`database database--${name}`} transform={`translate(${x}, ${y})`}>
         <path d={pathStr} fill="none" stroke="#000000" />
+        <text textAnchor="middle" fontSize={12} x={right / 2} y={TEXT_Y}>
+          {text}
+        </text>
       </g>
     );
   }
