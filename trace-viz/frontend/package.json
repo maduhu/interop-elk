@@ -4,14 +4,17 @@
   "private": true,
   "dependencies": {
     "d3": "^4.10.0",
+    "elasticsearch": "^13.3.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-scripts": "1.0.11"
+    "react-scripts": "1.0.11",
+    "superagent": "^3.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://0.0.0.0:9200"
 }
