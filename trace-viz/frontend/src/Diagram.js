@@ -2,27 +2,10 @@ import React, { Component } from 'react';
 import DiagramControls from './DiagramControls';
 import SimplifiedDiagram from './SimplifiedDiagram';
 import { has } from './utils';
-import * as d3 from 'd3';
 import { Client } from 'elasticsearch';
-import {
-  FILL,
-  STROKE,
-  STROKE_START,
-  STROKE_END,
-  FILL_START,
-  FILL_END,
-} from './constants';
 import './Diagram.css';
 
 /* eslint-disable */
-export const colorMap = {
-  lookup: '.color--lookup',
-  resolve: '.color--resolve',
-  quoteFees: '.color--quote',
-  quoteRoute: '.color--quote',
-  prepare: '.color--prepare',
-  fulfill: '.color--fulfill',
-};
 const animationSequences = {
   lookup: [
     // These should be highlighted purple
@@ -85,8 +68,8 @@ const animationSequences = {
     'central-ledger-db',
     'payee-prepare',
     'payee-dfsp-connector',
-    'payee-dfsp-ledger-adapter-dot',
-    'payee-dfsp-ledger-adapter',
+    'payee-ledger-adapter-dot',
+    'payee-ledger-adapter',
     'evaluate-condition'
   ],
   fulfill: [
@@ -99,6 +82,7 @@ const animationSequences = {
     'central-ledger-db',
     ['payer-notify-fulfillment', 'payee-notify-fulfillment'],
     ['payer-dfsp-connector', 'payee-dfsp-connector'],
+    ['payer-ledger-adapter-dot', 'payee-ledger-adapter-dot'],
     ['payer-ledger-adapter', 'payee-ledger-adapter'],
     ['payer-ledger-db-dot', 'payee-ledger-db-dot'],
     ['payer-ledger-db', 'payee-ledger-db'],
@@ -108,46 +92,6 @@ const animationSequences = {
   ],
 };
 /* eslint-enable */
-
-function animateEdge(node, action, duration, strokeStart) {
-  const sel = d3.select(`.line--${node}-${action} path`);
-  const name = node + action; // Needed to cancel transitions if user takes action mid-animation.
-
-  sel.transition(name)
-    .duration(duration)
-    .attr('stroke', strokeStart)
-    .attr('marker-end', 'url(#arrow--selected)');
-}
-
-function animateNode(node, action, duration, strokeStart, strokeEnd, fillStart, fillEnd) {
-  let sel;
-  let name; // Needed to cancel transitions if user takes action mid-animation.
-
-  if (action === null) {
-    sel = d3.select(`.node--${node} rect`);
-    name = node;
-  } else {
-    sel = d3.select(`.annotation--${node}-${action} rect`);
-    name = node + action;
-  }
-
-  sel.transition(name)
-    .duration(duration)
-    .attr('fill', fillStart)
-    .attr('stroke', strokeStart)
-    .on('end', () => {
-      sel.transition(name)
-        .duration(duration * 3)
-        .attr('fill', fillEnd)
-        .attr('stroke', strokeEnd);
-    });
-}
-
-function animateNodeAndEdge(node, action, duration, strokeStart, strokeEnd, fillStart, fillEnd) {
-  animateNode(node, null, duration, strokeStart, strokeEnd, fillStart, fillEnd);
-  animateNode(node, action, duration, strokeStart, strokeEnd, fillStart, fillEnd);
-  animateEdge(node, action, duration, strokeStart, strokeEnd);
-}
 
 class Diagram extends Component {
   constructor(props) {
@@ -162,15 +106,15 @@ class Diagram extends Component {
     this.backward = this.backward.bind(this);
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
-    this.reset = this.reset.bind(this);
     this.selectStep = this.selectStep.bind(this);
     this.client = new Client({ host: 'localhost:9200' });
     this.getTraceIds();
     this.state = {
       traceId: null, // Good test id: 5e97e69e-93af-4b13-acdd-a60bb790a3bf
       traceIds: null,
-      traceSequence: null,
-      step: null,
+      actionSequence: null,
+      actionStep: 0,
+      animationStep: -1,
       stepData: {},
       loopId: null,
     };
@@ -185,7 +129,7 @@ class Diagram extends Component {
   componentWillReceiveProps(props) {
     if (props.traceId !== this.props.traceId) {
       // TraceId changed, stop all animations, reset state, load new data, then start playing
-      this.reset();
+      // this.reset();
     }
   }
 
@@ -253,7 +197,7 @@ class Diagram extends Component {
     this.setState(() => {
       const newState = { data: data.hits.hits };
       const callTypes = {};
-      const sequences = [];
+      const sequence = [];
 
       data.hits.hits.forEach((hit) => {
         const source = hit._source; // eslint-disable-line
@@ -270,32 +214,32 @@ class Diagram extends Component {
       });
 
       if (has.call(callTypes, 'user-lookup')) {
-        sequences.push('lookup');
+        sequence.push('lookup');
       }
 
       if (has.call(callTypes, 'payee-details')) {
-        sequences.push('resolve');
+        sequence.push('resolve');
       }
 
       if (has.call(callTypes, 'quote-fees')) {
-        sequences.push('quoteFees');
+        sequence.push('quoteFees');
       }
 
       if (has.call(callTypes, 'quote-route')) {
-        sequences.push('quoteRoute');
+        sequence.push('quoteRoute');
       }
 
       if (has.call(callTypes, 'rest-prepare') || has.call(callTypes, 'dfsp-prepare')) {
-        sequences.push('prepare');
+        sequence.push('prepare');
       }
 
       if (has.call(callTypes, 'rest-fulfill') || has.call(callTypes, 'dfsp-fulfill')) {
-        sequences.push('fulfill');
+        sequence.push('fulfill');
       }
 
-      newState.traceSequence = sequences;
+      newState.actionSequence = sequence;
       return newState;
-    });
+    }, this.playPause);
   }
 
   getTraceData() {
@@ -317,16 +261,19 @@ class Diagram extends Component {
 
   startPlayLoop() {
     this.setState((state) => {
-      let step = state.step;
+      let actionStep = state.actionStep;
+      let animationStep = state.animationStep;
+      const actionSequence = state.actionSequence;
 
-      if (step === this.state.path.length - 1) {
+      if (actionStep === actionSequence.length) {
         // If the user hits play and we have already played from beginning to end then we reset.
-        step = null;
-        this.reset();
+        actionStep = 0;
+        animationStep = -1;
       }
 
       return {
-        step,
+        actionStep,
+        animationStep,
         loopId: window.setInterval(this.forward, 400),
       };
     });
@@ -347,71 +294,62 @@ class Diagram extends Component {
     }
   }
 
-  animateStep(step) {
-    const [node, action] = this.state.path[step];
-    animateNodeAndEdge(node, action, 400, STROKE_START, STROKE_END, FILL_START, FILL_END);
-  }
-
   backward() {
     this.setState((state) => {
-      if (state.step === null) {
+      let { actionStep, animationStep } = state;
+
+      if (animationStep === -1 && actionStep === 0) {
+        // We're as far back as we can go, do nothing.
         return {};
       }
 
-      let step = state.step - 1;
+      const actionSequence = state.actionSequence;
 
-      if (step < 0) {
-        step = null;
-        this.reset();
-      } else {
-        this.animateStep(step);
+      animationStep -= 1;
+
+      if (animationStep === -1 && actionStep > 0) {
+        actionStep -= 1;
+        const action = actionSequence[actionStep];
+        const animationSequence = animationSequences[action];
+        animationStep = animationSequence.length - 1;
       }
 
-      return { step };
+      return { actionStep, animationStep };
     });
   }
 
   forward() {
     this.setState((state) => {
-      let step = state.step;
+      let { actionStep, animationStep } = state;
+      const actionSequence = state.actionSequence;
+      const action = actionSequence[actionStep];
+      const animationSequence = animationSequences[action];
 
-      if (step === null) {
-        step = 0;
-      } else if (step !== this.state.path.length - 1) {
-        step += 1;
+      if (actionStep === actionSequence.length) {
+        // Do nothing if we've gotten to the end of all our steps.
+        return {};
       }
 
-      this.animateStep(step);
+      animationStep += 1;
 
-      if (step === this.state.path.length - 1) {
-        // If we've reached the last step we can stop the loop.
+      if (animationStep === animationSequence.length) {
+        animationStep = 0;
+        actionStep += 1;
+      }
+
+      if (actionStep === actionSequence.length) {
         window.clearInterval(state.loopId);
-        return { step, loopId: null };
+        return { actionStep, animationStep, loopId: null };
       }
 
-      return { step };
+      return { actionStep, animationStep };
     });
-  }
-
-  reset() {
-    const allElements = d3.select('svg').selectAll('*');
-
-    this.state.path.forEach((item) => {
-      // Interrupt all pending transitions, transitions are named via node + action;
-      const [node, action] = item;
-      allElements.interrupt(node);
-      allElements.interrupt(node + action);
-    });
-
-    d3.selectAll('.line path').attr('stroke', STROKE).attr('marker-end', 'url(#arrow)');
-    d3.selectAll('.annotation rect').attr('fill', FILL).attr('stroke', STROKE);
-    d3.selectAll('.node rect').attr('fill', FILL).attr('stroke', STROKE);
   }
 
   stop() {
     this.setState((state) => {
       window.clearInterval(state.loopId);
-      return { loopId: null, step: null };
+      return { loopId: null, actionStep: 0, animationStep: -1 };
     }, this.reset);
   }
 
@@ -428,16 +366,37 @@ class Diagram extends Component {
   }
 
   render() {
+    /*
+    Idea for phasing out older highlights later
+      - Store highlights as an object
+        - keys are icon names
+        - values are arrays of: timestamp when icon updated, action name
+      - During loop build up highlight object and store it on this.state
+      - Have a separate loop that checks the highlight map and clears any highlights that are older than 1 second,
+        except when the highlight is the current active step. Might want to store current step (names + action) on
+        state object as well to make this logic easier.
+     */
     const width = 1024;
     const height = 500;
     const zoom = this.props.zoom ? this.props.zoom : 1;
     const isPlaying = this.state.loopId !== null;
+    const { actionSequence, actionStep, animationStep } = this.state;
+    let highlight = null;
+    let action = null;
+
+    if (actionSequence && actionStep < actionSequence.length && animationStep > -1) {
+      action = actionSequence[actionStep];
+
+      if (action) {
+        highlight = animationSequences[action][animationStep];
+      }
+    }
 
     return (
       <div className="architecture-diagram">
         <svg className="diagram-canvas" width={width} height={height}>
           <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
-            <SimplifiedDiagram />
+            <SimplifiedDiagram action={action} highlight={highlight} />
           </g>
         </svg>
 

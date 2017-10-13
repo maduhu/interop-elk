@@ -12,7 +12,7 @@
 .annotation rect,
 .node rect,
 .database path {
-  transition: fill 1s;
+  transition: fill 400ms;
 }
 .color--lookup {
   fill: #dcd0e5;
@@ -25,10 +25,4 @@
 }
 .color--fulfill {
   fill: #cde6ce;
-}
-.color--annotation-inactive {
-  fill: #aaaaaa;
-}
-.color--node-inactive {
-  fill: #ffffff;
 }

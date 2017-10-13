@@ -1,12 +1,13 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
+import Icon from './Icon';
 
-class Dot extends PureComponent {
+class Dot extends Icon {
   render() {
     const { name, x, y } = this.props;
 
     return (
       <g className={`dot dot--${name}`}>
-        <circle cx={x} cy={y} r={10} fill="none" stroke="#000" strokeWidth="1" />
+        <circle className={this.getColorClass()} cx={x} cy={y} r={10} fill="none" stroke="#000" strokeWidth="1" />
       </g>
     );
   }

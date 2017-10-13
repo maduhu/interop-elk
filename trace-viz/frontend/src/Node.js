@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
+import Icon from './Icon';
 import { NODE_WIDTH } from './constants';
 
-class Node extends PureComponent {
+class Node extends Icon {
   render() {
     const { x, y, height, name, text, rotate, dashed } = this.props;
     let textY;
@@ -27,6 +28,7 @@ class Node extends PureComponent {
     return (
       <g className={`node node--${name}`} transform={`translate(${x}, ${y})`}>
         <rect
+          className={this.getColorClass()}
           fill="#fff"
           stroke="#000"
           width={NODE_WIDTH}

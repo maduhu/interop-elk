@@ -1,16 +1,17 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
+import Icon from './Icon';
 
 const TEXT_Y = 15;
 
-class Annotation extends PureComponent {
+class Annotation extends Icon {
   render() {
-    const { name, x, y, width, height, color, text } = this.props;
-    const colorClass = `color--${color === undefined ? 'annotation-inactive' : color}`;
+    const { name, x, y, width, height, text } = this.props;
 
     return (
       <g className={`annotation annotation--${name}`} transform={`translate(${x}, ${y})`}>
         <rect
-          className={colorClass}
+          className={this.getColorClass()}
+          fill="#aaaaaa"
           x="0"
           y="0"
           width={width}

@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
+import Icon from './Icon';
 
 const TEXT_Y = 55;
 
-class Database extends PureComponent {
+class Database extends Icon {
   render() {
     const { name, x, y, text } = this.props;
     const curveY = 20;
@@ -21,7 +22,7 @@ class Database extends PureComponent {
 
     return (
       <g className={`database database--${name}`} transform={`translate(${x}, ${y})`}>
-        <path d={pathStr} fill="none" stroke="#000000" />
+        <path className={this.getColorClass()} d={pathStr} fill="none" stroke="#000000" />
         <text textAnchor="middle" fontSize={12} x={right / 2} y={TEXT_Y}>
           {text}
         </text>
