@@ -29,7 +29,7 @@ class App extends Component {
       <div className="trace-viz-app">
         {/*<Header traceId={this.state.traceId} updateTraceId={this.updateTraceId} />*/}
         <Diagram traceId={this.state.traceId} data={this.state.traceData} />
-        <Positions />
+        {/*<Positions />*/}
       </div>
     );
   }
