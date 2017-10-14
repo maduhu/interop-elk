@@ -394,18 +394,6 @@ class Diagram extends Component {
     }, this.reset);
   }
 
-  selectStep(step) {
-    this.setState((state) => {
-      // Only allow a user to select a step via click if we're not currently playing back the steps.
-      if (state.playLoopId === null) {
-        this.animateStep(step);
-        return { step };
-      }
-
-      return {};
-    });
-  }
-
   render() {
     /*
     Idea for phasing out older highlights later
