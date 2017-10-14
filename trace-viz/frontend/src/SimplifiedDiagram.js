@@ -7,7 +7,7 @@ import Database from './Database';
 
 class SimplifiedDiagram extends PureComponent {
   render() {
-    const { action, highlight } = this.props;
+    const { action, highlights } = this.props;
     const annotationPadding = 10;
     const skinnyAnnotationWidth = 150;
     const wideAnnotationWidth = (2 * skinnyAnnotationWidth) + (2 * annotationPadding) + NODE_WIDTH;
@@ -76,7 +76,7 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="pathfinder"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={sixthColX + annotationPadding}
           y={secondRowY - annotationPadding}
         />
@@ -84,7 +84,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="pathfinder"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={sixthColX + dotXPadding}
           y={firstRowY}
           height={60}
@@ -97,7 +97,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payer-dfsp-logic"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={firstColX}
           y={secondRowY}
           height={defaultNodeHeight}
@@ -107,7 +107,7 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="payer-dfsp-logic-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={secondColX}
           y={secondRowY + dotYPadding}
         />
@@ -115,7 +115,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payer-scheme-adapter"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={thirdColX}
           y={secondRowY}
           height={defaultNodeHeight}
@@ -125,7 +125,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="lookup-identifier"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={secondRowY + (2 * annotationPadding)}
           width={skinnyAnnotationWidth}
@@ -136,7 +136,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="resolve-recipient"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={secondRowY + (7 * annotationPadding)}
           width={wideAnnotationWidth}
@@ -147,7 +147,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="quote-fees"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={secondRowY + (10 * annotationPadding)}
           width={wideAnnotationWidth}
@@ -158,7 +158,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="central-directory"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fifthColX}
           y={secondRowY}
           height={defaultNodeHeight / 2}
@@ -168,7 +168,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payee-scheme-adapter"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={seventhColX}
           y={secondRowY}
           height={defaultNodeHeight}
@@ -178,7 +178,7 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="payee-dfsp-logic-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={eighthColX}
           y={secondRowY + dotYPadding}
         />
@@ -186,7 +186,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payee-dfsp-logic"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={ninthColX}
           y={secondRowY}
           height={defaultNodeHeight}
@@ -196,7 +196,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="create-condition"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={tenthColX + dotXPadding}
           y={secondRowY + (defaultNodeHeight / 4)}
           height={defaultNodeHeight / 2}
@@ -209,7 +209,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payer-ledger-adapter"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={firstColX}
           y={thirdRowY}
           height={defaultNodeHeight}
@@ -219,7 +219,7 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="payer-ledger-adapter-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={secondColX}
           y={thirdRowY + dotYPadding}
         />
@@ -227,7 +227,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payer-dfsp-connector"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={thirdColX}
           y={thirdRowY}
           height={defaultNodeHeight}
@@ -237,7 +237,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payer-quote-route"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={thirdRowY + annotationPadding}
           width={skinnyAnnotationWidth}
@@ -248,7 +248,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payer-prepare"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={thirdRowY + (4.5 * annotationPadding)}
           width={skinnyAnnotationWidth}
@@ -259,7 +259,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payer-notify-fulfillment"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fourthColX}
           y={thirdRowY + (8 * annotationPadding)}
           width={skinnyAnnotationWidth}
@@ -270,7 +270,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="central-ist"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fifthColX}
           y={thirdRowY}
           height={defaultNodeHeight}
@@ -280,7 +280,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payee-quote-route"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={sixthColX}
           y={thirdRowY + annotationPadding}
           width={skinnyAnnotationWidth}
@@ -291,7 +291,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payee-prepare"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={sixthColX}
           y={thirdRowY + (4.5 * annotationPadding)}
           width={skinnyAnnotationWidth}
@@ -302,7 +302,7 @@ class SimplifiedDiagram extends PureComponent {
         <Annotation
           name="payee-notify-fulfillment"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={sixthColX}
           y={thirdRowY + (8 * annotationPadding)}
           width={skinnyAnnotationWidth}
@@ -313,7 +313,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payee-dfsp-connector"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={seventhColX}
           y={thirdRowY}
           height={defaultNodeHeight}
@@ -323,7 +323,7 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="payee-ledger-adapter-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={eighthColX}
           y={thirdRowY + dotYPadding}
         />
@@ -331,7 +331,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="payee-ledger-adapter"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={ninthColX}
           y={thirdRowY}
           height={defaultNodeHeight}
@@ -341,7 +341,7 @@ class SimplifiedDiagram extends PureComponent {
         <Node
           name="evaluate-condition"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={tenthColX + dotXPadding}
           y={thirdRowY + yPadding}
           height={NODE_WIDTH}
@@ -352,9 +352,9 @@ class SimplifiedDiagram extends PureComponent {
         {/* Database Dot Row */}
 
         <Dot
-          name="payer-ledger-adapter-db-dot"
+          name="payer-ledger-db-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={firstColX + (NODE_WIDTH / 2)}
           y={fourthRowY}
         />
@@ -362,15 +362,15 @@ class SimplifiedDiagram extends PureComponent {
         <Dot
           name="central-ledger-db-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fifthColX + (NODE_WIDTH / 2)}
           y={fourthRowY}
         />
 
         <Dot
-          name="payee-ledger-adapter-db-dot"
+          name="payee-ledger-db-dot"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={ninthColX + (NODE_WIDTH / 2)}
           y={fourthRowY}
         />
@@ -378,7 +378,7 @@ class SimplifiedDiagram extends PureComponent {
         {/*<Dot*/}
           {/*name="eval-condition-dot"*/}
           {/*action={action}*/}
-          {/*highlight={highlight}*/}
+          {/*highlights={highlights}*/}
           {/*x={tenthColX + 10}*/}
           {/*y={fourthRowY + 10}*/}
         {/*/>*/}
@@ -388,7 +388,7 @@ class SimplifiedDiagram extends PureComponent {
         <Database
           name="payer-ledger-db"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={firstColX}
           y={fifthRowY}
           text="DFSP Ledger"
@@ -397,7 +397,7 @@ class SimplifiedDiagram extends PureComponent {
         <Database
           name="central-ledger-db"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={fifthColX}
           y={fifthRowY}
           text="IST Ledger"
@@ -406,7 +406,7 @@ class SimplifiedDiagram extends PureComponent {
         <Database
           name="payee-ledger-db"
           action={action}
-          highlight={highlight}
+          highlights={highlights}
           x={ninthColX}
           y={fifthRowY}
           text="DFSP Ledger"
