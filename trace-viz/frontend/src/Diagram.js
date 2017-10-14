@@ -127,7 +127,6 @@ class Diagram extends Component {
 
   componentDidMount() {
     this.getTraceIds();
-    this.getTraceData();
     this.startCleanUpLoop();
     this.startTraceIdsLoop();
   }
