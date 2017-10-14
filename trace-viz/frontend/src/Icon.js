@@ -16,10 +16,10 @@ class Annotation extends PureComponent {
   }
 
   getColorClass() {
-    const { name, highlight, action } = this.props;
+    const { name, highlights } = this.props;
 
-    if ((Array.isArray(highlight) && highlight.indexOf(name) > -1) || (highlight !== null && name === highlight)) {
-      return colorMap[action];
+    if (highlights[name]) {
+      return colorMap[highlights[name].action];
     }
 
     return '';
