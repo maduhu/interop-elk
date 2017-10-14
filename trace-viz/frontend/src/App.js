@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import Header from './Header';
 import Diagram from './Diagram';
+import Positions from './Positions';
 import './App.css';
 
 class App extends Component {
@@ -28,6 +29,7 @@ class App extends Component {
       <div className="trace-viz-app">
         {/*<Header traceId={this.state.traceId} updateTraceId={this.updateTraceId} />*/}
         <Diagram traceId={this.state.traceId} data={this.state.traceData} />
+        <Positions />
       </div>
     );
   }

@@ -1,0 +1,12 @@
+.positions {
+  display: flex;
+}
+.ok {
+  color: green;
+}
+.warning {
+  color: orange;
+}
+.critical {
+  color: red;
+}
