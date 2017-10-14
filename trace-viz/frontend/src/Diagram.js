@@ -48,9 +48,6 @@ const animationSequences = {
     'central-ist',
     'payee-quote-route',
     'payee-dfsp-connector',
-    'payee-scheme-adapter',
-    'payee-dfsp-logic-dot',
-    'payee-dfsp-logic',
   ],
   prepare: [
     // These should be highlighted blue
@@ -265,7 +262,7 @@ class Diagram extends Component {
       let animationStep = state.animationStep;
       const actionSequence = state.actionSequence;
 
-      if (actionStep === actionSequence.length) {
+      if (actionSequence && actionStep === actionSequence.length) {
         // If the user hits play and we have already played from beginning to end then we reset.
         actionStep = 0;
         animationStep = -1;
