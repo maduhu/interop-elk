@@ -26,3 +26,20 @@
 .color--fulfill {
   fill: #cde6ce;
 }
+.main-diagram-container {
+  display: flex;
+}
+.trace-id-list {
+  margin-top: 0.5em;
+  margin-left: 1em;
+}
+.trace-id-list ul {
+  list-style-type: none;
+}
+.trace-id {
+  margin: 0.5em 0;
+  padding: 0.25em;
+}
+.trace-id--selected {
+  background-color: rgb(80, 200, 232);
+}

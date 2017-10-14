@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DiagramControls from './DiagramControls';
 import SimplifiedDiagram from './SimplifiedDiagram';
+import TraceIdList from './TraceIdList';
 import { has } from './utils';
 import { Client } from 'elasticsearch';
 import './Diagram.css';
@@ -107,9 +108,9 @@ class Diagram extends Component {
     this.backward = this.backward.bind(this);
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
-    this.selectStep = this.selectStep.bind(this);
+    this.traceIdSelected = this.traceIdSelected.bind(this);
     this.client = new Client({ host: 'localhost:9200' });
-    this.getTraceIds();
+
     this.state = {
       traceId: null, // Good test id: 5e97e69e-93af-4b13-acdd-a60bb790a3bf
       traceIds: null,
@@ -123,9 +124,8 @@ class Diagram extends Component {
   }
 
   componentDidMount() {
-    if (this.state.path !== null) {
-      // this.playPause();
-    }
+    this.getTraceIds();
+    this.getTraceData();
     this.startCleanUpLoop();
   }
 
@@ -138,7 +138,7 @@ class Diagram extends Component {
         const currentAction = actionSequence[actionStep];
         let currentNodes = [];
 
-        if (currentAction) {
+        if (currentAction && animationStep > -1) {
           currentNodes = animationSequences[currentAction][animationStep];
         }
 
@@ -151,6 +151,8 @@ class Diagram extends Component {
 
         return { highlights: newHighlights };
       }
+
+      return {};
     });
   }
 
@@ -307,7 +309,7 @@ class Diagram extends Component {
   stopPlayLoop() {
     this.setState((state) => {
       window.clearInterval(state.playLoopId);
-      return { playLoopId: null };
+      return { playLoopId: null, highlights: {} };
     });
   }
 
@@ -394,6 +396,13 @@ class Diagram extends Component {
     }, this.reset);
   }
 
+  traceIdSelected(traceId) {
+    this.setState((state) => {
+      window.clearInterval(state.playLoopId);
+      return { traceId, playLoopId: null, actionStep: 0, animationStep: -1 };
+    }, this.getTraceData);
+  }
+
   render() {
     /*
     Idea for phasing out older highlights later
@@ -413,12 +422,19 @@ class Diagram extends Component {
 
     return (
       <div className="architecture-diagram">
-        <svg className="diagram-canvas" width={width} height={height}>
-          <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
-            <SimplifiedDiagram highlights={highlights} />
-          </g>
-        </svg>
+        <div className="main-diagram-container">
+          <svg className="diagram-canvas" width={width} height={height}>
+            <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
+              <SimplifiedDiagram highlights={highlights} />
+            </g>
+          </svg>
 
+          <TraceIdList
+            traceIds={this.state.traceIds}
+            currentTraceId={this.state.traceId}
+            traceIdSelected={this.traceIdSelected}
+          />
+        </div>
 
         <DiagramControls
           isPlaying={isPlaying}
