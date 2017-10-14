@@ -70,7 +70,7 @@ const animationSequences = {
     ['payee-dfsp-connector'],
     ['payee-ledger-adapter-dot'],
     ['payee-ledger-adapter'],
-    ['evaluate-condition']
+    ['evaluate-condition'],
   ],
   fulfill: [
     // These should be highlighted green
@@ -322,6 +322,7 @@ class Diagram extends Component {
   backward() {
     this.setState((state) => {
       let { actionStep, animationStep } = state;
+      const highlights = { ...state.highlights };
 
       if (animationStep === -1 && actionStep === 0) {
         // We're as far back as we can go, do nothing.
@@ -339,7 +340,14 @@ class Diagram extends Component {
         animationStep = animationSequence.length - 1;
       }
 
-      return { actionStep, animationStep };
+      const action = actionSequence[actionStep];
+      const nodes = animationSequences[action][animationStep];
+
+      nodes.forEach((node) => {
+        highlights[node] = { action, time: new Date() };
+      });
+
+      return { actionStep, animationStep, highlights };
     });
   }
 
