@@ -97,6 +97,7 @@ class Diagram extends Component {
   constructor(props) {
     super(props);
     this.cleanUp = this.cleanUp.bind(this);
+    this.startTraceIdsLoop = this.startTraceIdsLoop.bind(this);
     this.startCleanUpLoop = this.startCleanUpLoop.bind(this);
     this.parseTraceIds = this.parseTraceIds.bind(this);
     this.getTraceIds = this.getTraceIds.bind(this);
@@ -120,6 +121,7 @@ class Diagram extends Component {
       highlights: {},
       playLoopId: null,
       cleanupLoopId: null,
+      traceIdsLoopId: null,
     };
   }
 
@@ -127,6 +129,7 @@ class Diagram extends Component {
     this.getTraceIds();
     this.getTraceData();
     this.startCleanUpLoop();
+    this.startTraceIdsLoop();
   }
 
   cleanUp() {
@@ -156,8 +159,12 @@ class Diagram extends Component {
     });
   }
 
+  startTraceIdsLoop() {
+    this.setState({ traceIdsLoopId: window.setInterval(this.getTraceIds, 5000) });
+  }
+
   startCleanUpLoop() {
-    this.setState({ cleanupLoopId: window.setInterval(this.cleanUp, 100)});
+    this.setState({ cleanupLoopId: window.setInterval(this.cleanUp, 100) });
   }
 
   parseTraceIds(data) {
