@@ -15,16 +15,16 @@
   transition: fill 400ms;
 }
 .color--lookup {
-  fill: #dcd0e5;
+  fill: #d303ff;
 }
 .color--quote {
-  fill: #fee3c6;
+  fill: #ffaf07;
 }
 .color--prepare {
-  fill: #d3e6fc;
+  fill: #028aff;
 }
 .color--fulfill {
-  fill: #cde6ce;
+  fill: #2ad43a;
 }
 .main-diagram-container {
   display: flex;
