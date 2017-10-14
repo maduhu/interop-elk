@@ -5,78 +5,81 @@ import { has } from './utils';
 import { Client } from 'elasticsearch';
 import './Diagram.css';
 
-/* eslint-disable */
 const animationSequences = {
+  blank: [
+    // This is used so we can let animations play out between "actions"
+    [],
+  ],
   lookup: [
     // These should be highlighted purple
-    'payer-dfsp-logic',
-    'payer-dfsp-logic-dot',
-    'payer-scheme-adapter',
-    'lookup-identifier',
-    'central-directory',
-    'pathfinder-dot',
-    'pathfinder',
+    ['payer-dfsp-logic'],
+    ['payer-dfsp-logic-dot'],
+    ['payer-scheme-adapter'],
+    ['lookup-identifier'],
+    ['central-directory'],
+    ['pathfinder-dot'],
+    ['pathfinder'],
   ],
   resolve: [
     // These should be highlighted purple
-    'payer-dfsp-logic',
-    'payer-dfsp-logic-dot',
-    'payer-scheme-adapter',
-    'resolve-recipient',
-    'payee-scheme-adapter',
-    'payee-dfsp-logic-dot',
-    'payee-dfsp-logic',
+    ['payer-dfsp-logic'],
+    ['payer-dfsp-logic-dot'],
+    ['payer-scheme-adapter'],
+    ['resolve-recipient'],
+    ['payee-scheme-adapter'],
+    ['payee-dfsp-logic-dot'],
+    ['payee-dfsp-logic'],
   ],
   quoteFees: [
     // These should be highlighted orange
-    'payer-dfsp-logic',
-    'payer-dfsp-logic-dot',
-    'payer-scheme-adapter',
-    'quote-fees',
-    'payee-scheme-adapter',
-    'payee-dfsp-logic-dot',
-    'payee-dfsp-logic',
-    'create-condition',
+    ['payer-dfsp-logic'],
+    ['payer-dfsp-logic-dot'],
+    ['payer-scheme-adapter'],
+    ['quote-fees'],
+    ['payee-scheme-adapter'],
+    ['payee-dfsp-logic-dot'],
+    ['payee-dfsp-logic'],
+    ['create-condition'],
   ],
   quoteRoute: [
     // These should be highlighted orange
-    'payer-dfsp-logic',
-    'payer-dfsp-logic-dot',
-    'payer-scheme-adapter',
-    'payer-dfsp-connector',
-    'payer-quote-route',
-    'central-ist',
-    'payee-quote-route',
-    'payee-dfsp-connector',
+    ['payer-dfsp-logic'],
+    ['payer-dfsp-logic-dot'],
+    ['payer-scheme-adapter'],
+    ['payer-dfsp-connector'],
+    ['payer-quote-route'],
+    ['central-ist'],
+    ['payee-quote-route'],
+    ['payee-dfsp-connector'],
   ],
   prepare: [
     // These should be highlighted blue
-    'payer-dfsp-logic',
-    'payer-dfsp-logic-dot',
-    'payer-scheme-adapter',
-    'payer-dfsp-connector',
-    'payer-ledger-adapter-dot',
-    'payer-ledger-adapter',
-    'payer-ledger-db-dot',
-    'payer-ledger-db',
-    'payer-prepare',
-    'central-ist',
-    'central-ledger-db-dot',
-    'central-ledger-db',
-    'payee-prepare',
-    'payee-dfsp-connector',
-    'payee-ledger-adapter-dot',
-    'payee-ledger-adapter',
-    'evaluate-condition'
+    ['payer-dfsp-logic'],
+    ['payer-dfsp-logic-dot'],
+    ['payer-scheme-adapter'],
+    ['payer-dfsp-connector'],
+    ['payer-ledger-adapter-dot'],
+    ['payer-ledger-adapter'],
+    ['payer-ledger-db-dot'],
+    ['payer-ledger-db'],
+    ['payer-prepare'],
+    ['central-ist'],
+    ['central-ledger-db-dot'],
+    ['central-ledger-db'],
+    ['payee-prepare'],
+    ['payee-dfsp-connector'],
+    ['payee-ledger-adapter-dot'],
+    ['payee-ledger-adapter'],
+    ['evaluate-condition']
   ],
   fulfill: [
     // These should be highlighted green
-    'evaluate-condition',
-    'payee-dfsp-connector',
-    'payee-notify-fulfillment',
-    'central-ist',
-    'central-ledger-db-dot',
-    'central-ledger-db',
+    ['evaluate-condition'],
+    ['payee-dfsp-connector'],
+    ['payee-notify-fulfillment'],
+    ['central-ist'],
+    ['central-ledger-db-dot'],
+    ['central-ledger-db'],
     ['payer-notify-fulfillment', 'payee-notify-fulfillment'],
     ['payer-dfsp-connector', 'payee-dfsp-connector'],
     ['payer-ledger-adapter-dot', 'payee-ledger-adapter-dot'],
@@ -88,11 +91,12 @@ const animationSequences = {
     ['payer-dfsp-logic', 'payee-dfsp-logic'],
   ],
 };
-/* eslint-enable */
 
 class Diagram extends Component {
   constructor(props) {
     super(props);
+    this.cleanUp = this.cleanUp.bind(this);
+    this.startCleanUpLoop = this.startCleanUpLoop.bind(this);
     this.parseTraceIds = this.parseTraceIds.bind(this);
     this.getTraceIds = this.getTraceIds.bind(this);
     this.parseTraceData = this.parseTraceData.bind(this);
@@ -112,8 +116,9 @@ class Diagram extends Component {
       actionSequence: null,
       actionStep: 0,
       animationStep: -1,
-      stepData: {},
-      loopId: null,
+      highlights: {},
+      playLoopId: null,
+      cleanupLoopId: null,
     };
   }
 
@@ -121,13 +126,36 @@ class Diagram extends Component {
     if (this.state.path !== null) {
       // this.playPause();
     }
+    this.startCleanUpLoop();
   }
 
-  componentWillReceiveProps(props) {
-    if (props.traceId !== this.props.traceId) {
-      // TraceId changed, stop all animations, reset state, load new data, then start playing
-      // this.reset();
-    }
+  cleanUp() {
+    this.setState((state) => {
+      if (state.actionSequence) {
+        const { actionSequence, actionStep, animationStep, highlights } = state;
+        const now = new Date();
+        const newHighlights = {};
+        const currentAction = actionSequence[actionStep];
+        let currentNodes = [];
+
+        if (currentAction) {
+          currentNodes = animationSequences[currentAction][animationStep];
+        }
+
+        Object.keys(highlights).forEach((node) => {
+          // Only keep highlights if they're the current node (playback is paused) or if it is less than a second old.
+          if (currentNodes.indexOf(node) > -1 || now - highlights[node].time < 1000) {
+            newHighlights[node] = highlights[node];
+          }
+        });
+
+        return { highlights: newHighlights };
+      }
+    });
+  }
+
+  startCleanUpLoop() {
+    this.setState({ cleanupLoopId: window.setInterval(this.cleanUp, 100)});
   }
 
   parseTraceIds(data) {
@@ -200,13 +228,7 @@ class Diagram extends Component {
         const source = hit._source; // eslint-disable-line
 
         if (has.call(source, 'l1p_call_type')) {
-          const callType = source.l1p_call_type;
-
-          if (!has.call(callTypes, callType)) {
-            callTypes[callType] = {};
-          }
-
-          callTypes[callType][`${source.l1p_environment} - ${source.l1p_service_id}`] = true; // eslint-disable-line
+          callTypes[source.l1p_call_type] = true; // eslint-disable-line
         }
       });
 
@@ -231,6 +253,12 @@ class Diagram extends Component {
       }
 
       if (has.call(callTypes, 'rest-fulfill') || has.call(callTypes, 'dfsp-fulfill')) {
+        if (sequence.length > 0) {
+          // Add two blank sequences so the evaluate condition animation has time to complete.
+          sequence.push('blank');
+          sequence.push('blank');
+        }
+
         sequence.push('fulfill');
       }
 
@@ -271,20 +299,20 @@ class Diagram extends Component {
       return {
         actionStep,
         animationStep,
-        loopId: window.setInterval(this.forward, 400),
+        playLoopId: window.setInterval(this.forward, 400),
       };
     });
   }
 
   stopPlayLoop() {
     this.setState((state) => {
-      window.clearInterval(state.loopId);
-      return { loopId: null };
+      window.clearInterval(state.playLoopId);
+      return { playLoopId: null };
     });
   }
 
   playPause() {
-    if (this.state.loopId === null) {
+    if (this.state.playLoopId === null) {
       this.startPlayLoop();
     } else {
       this.stopPlayLoop();
@@ -319,7 +347,8 @@ class Diagram extends Component {
     this.setState((state) => {
       let { actionStep, animationStep } = state;
       const actionSequence = state.actionSequence;
-      const action = actionSequence[actionStep];
+      const highlights = { ...state.highlights };
+      let action = actionSequence[actionStep];
       const animationSequence = animationSequences[action];
 
       if (actionStep === actionSequence.length) {
@@ -335,25 +364,32 @@ class Diagram extends Component {
       }
 
       if (actionStep === actionSequence.length) {
-        window.clearInterval(state.loopId);
-        return { actionStep, animationStep, loopId: null };
+        window.clearInterval(state.playLoopId);
+        return { actionStep, animationStep, playLoopId: null };
       }
 
-      return { actionStep, animationStep };
+      action = actionSequence[actionStep];
+      const nodes = animationSequences[action][animationStep];
+
+      nodes.forEach((node) => {
+        highlights[node] = { action, time: new Date() };
+      });
+
+      return { actionStep, animationStep, highlights };
     });
   }
 
   stop() {
     this.setState((state) => {
-      window.clearInterval(state.loopId);
-      return { loopId: null, actionStep: 0, animationStep: -1 };
+      window.clearInterval(state.playLoopId);
+      return { playLoopId: null, actionStep: 0, animationStep: -1 };
     }, this.reset);
   }
 
   selectStep(step) {
     this.setState((state) => {
       // Only allow a user to select a step via click if we're not currently playing back the steps.
-      if (state.loopId === null) {
+      if (state.playLoopId === null) {
         this.animateStep(step);
         return { step };
       }
@@ -376,24 +412,14 @@ class Diagram extends Component {
     const width = 1024;
     const height = 500;
     const zoom = this.props.zoom ? this.props.zoom : 1;
-    const isPlaying = this.state.loopId !== null;
-    const { actionSequence, actionStep, animationStep } = this.state;
-    let highlight = null;
-    let action = null;
-
-    if (actionSequence && actionStep < actionSequence.length && animationStep > -1) {
-      action = actionSequence[actionStep];
-
-      if (action) {
-        highlight = animationSequences[action][animationStep];
-      }
-    }
+    const isPlaying = this.state.playLoopId !== null;
+    const highlights = this.state.highlights;
 
     return (
       <div className="architecture-diagram">
         <svg className="diagram-canvas" width={width} height={height}>
           <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
-            <SimplifiedDiagram action={action} highlight={highlight} />
+            <SimplifiedDiagram highlights={highlights} />
           </g>
         </svg>
 
