@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import request from 'superagent/lib/client';
 import './Positions.css';
-import exampleData from './example_positions.json';
 
 // For demo purposes we are going to assume that both DFSPs have only 10k available to transfer.
 const BANK_TOTAL = 10000;
@@ -29,7 +28,9 @@ class Positions extends Component {
     this.stopLoop();
   }
 
-  parsePositions(error, data) {
+  parsePositions(error, response) {
+    const data = response.body;
+
     if (error === null && data !== null) {
       this.setState(() => {
         const newState = {};
