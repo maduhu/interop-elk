@@ -74,7 +74,7 @@ class SimplifiedDiagram extends PureComponent {
         {/* Pathfinder Row */}
 
         <Dot
-          name="pathfinder"
+          name="pathfinder-dot"
           action={action}
           highlights={highlights}
           x={sixthColX + annotationPadding}
