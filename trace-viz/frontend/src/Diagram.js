@@ -111,56 +111,6 @@ class Diagram extends Component {
     };
   }
 
-  parseTraceData(data) {
-    this.setState(() => {
-      const newState = { data: data.hits.hits };
-      const callTypes = {};
-      const sequence = [];
-
-      data.hits.hits.forEach((hit) => {
-        const source = hit._source; // eslint-disable-line
-
-        if (has.call(source, 'l1p_call_type')) {
-          callTypes[source.l1p_call_type] = true; // eslint-disable-line
-        }
-      });
-
-      if (has.call(callTypes, 'user-lookup')) {
-        sequence.push('lookup');
-      }
-
-      if (has.call(callTypes, 'payee-details')) {
-        sequence.push('resolve');
-      }
-
-      if (has.call(callTypes, 'quote-fees')) {
-        sequence.push('quoteFees');
-      }
-
-      if (has.call(callTypes, 'quote-route')) {
-        sequence.push('quoteRoute');
-      }
-
-      if (has.call(callTypes, 'rest-prepare') || has.call(callTypes, 'dfsp-prepare')) {
-        sequence.push('prepare');
-      }
-
-      if (has.call(callTypes, 'rest-fulfill') || has.call(callTypes, 'dfsp-fulfill')) {
-        if (sequence.length > 0) {
-          // Add two blank sequences so the evaluate condition animation has time to complete.
-          sequence.push('blank');
-          sequence.push('blank');
-        }
-
-        sequence.push('fulfill');
-      }
-
-      newState.actionSequence = sequence;
-      return newState;
-    }, this.playPause);
-  }
-
-
   startPlayLoop() {
     this.setState((state) => {
       let actionStep = state.actionStep;
@@ -289,7 +239,6 @@ class Diagram extends Component {
         startPlayback = true;
       }
 
-      console.log(actionSequence);
       return { actionSequence, actionStep: 0, animationStep: -1 };
     }, () => {
       if (startPlayback) {
