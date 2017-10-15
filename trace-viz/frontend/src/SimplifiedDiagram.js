@@ -376,14 +376,6 @@ class SimplifiedDiagram extends PureComponent {
           y={fourthRowY}
         />
 
-        {/*<Dot*/}
-          {/*name="eval-condition-dot"*/}
-          {/*action={action}*/}
-          {/*highlights={highlights}*/}
-          {/*x={tenthColX + 10}*/}
-          {/*y={fourthRowY + 10}*/}
-        {/*/>*/}
-
         {/* Database Row */}
 
         <Database
@@ -397,7 +389,7 @@ class SimplifiedDiagram extends PureComponent {
 
         <Position
           name="payer-position"
-          text="Payer Position"
+          text="DFSP 1 Position"
           position={payerPosition}
           x={fourthColX}
           y={fifthRowY}
@@ -414,7 +406,7 @@ class SimplifiedDiagram extends PureComponent {
 
         <Position
           name="payee-position"
-          text="Payee Position"
+          text="DFSP 2 Position"
           position={payeePosition}
           x={sixthColX}
           y={fifthRowY}
