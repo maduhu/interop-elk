@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import Node from './Node';
 import Dot from './Dot';
+import Position from './Position';
 import { NODE_WIDTH } from './constants';
 import Annotation from './Annotation';
 import Database from './Database';
 
 class SimplifiedDiagram extends PureComponent {
   render() {
-    const { action, highlights } = this.props;
+    const { action, highlights, payerPosition, payeePosition } = this.props;
     const annotationPadding = 10;
     const skinnyAnnotationWidth = 150;
     const wideAnnotationWidth = (2 * skinnyAnnotationWidth) + (2 * annotationPadding) + NODE_WIDTH;
@@ -394,6 +395,14 @@ class SimplifiedDiagram extends PureComponent {
           text="DFSP Ledger"
         />
 
+        <Position
+          name="payer-position"
+          text="Payer Position"
+          position={payerPosition}
+          x={fourthColX}
+          y={fifthRowY}
+        />
+
         <Database
           name="central-ledger-db"
           action={action}
@@ -401,6 +410,14 @@ class SimplifiedDiagram extends PureComponent {
           x={fifthColX}
           y={fifthRowY}
           text="IST Ledger"
+        />
+
+        <Position
+          name="payee-position"
+          text="Payee Position"
+          position={payeePosition}
+          x={sixthColX}
+          y={fifthRowY}
         />
 
         <Database
