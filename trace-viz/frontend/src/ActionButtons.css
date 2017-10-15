@@ -1,0 +1,27 @@
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+}
+.action-button {
+  margin: 0.5em;
+  font-size: 14px;
+  padding: 0.5em;
+  border-radius: 100%;
+  border: none;
+  cursor: pointer;
+}
+.action-button--lookup,
+.action-button--resolve {
+  background-color: #d303ff;
+}
+.action-button--quoteFees,
+.action-button--quoteRoute {
+  background-color: #ffaf07;
+}
+.action-button--prepare {
+  background-color: #028aff;
+}
+.action-button--fulfill,
+.action-button--notify {
+  background-color: #2ad43a;
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DiagramControls from './DiagramControls';
 import SimplifiedDiagram from './SimplifiedDiagram';
+import ActionButtons from './ActionButtons';
 import { has } from './utils';
 import './Diagram.css';
 
@@ -100,6 +101,7 @@ class Diagram extends Component {
     this.backward = this.backward.bind(this);
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
+    this.selectAction = this.selectAction.bind(this);
 
     this.state = {
       actionSequence: ALL_SEQUENCES,
@@ -164,8 +166,9 @@ class Diagram extends Component {
       let actionStep = state.actionStep;
       let animationStep = state.animationStep;
       const actionSequence = state.actionSequence;
+      const nodes = ANIMATION_SEQUENCES[actionSequence[actionStep]];
 
-      if (actionSequence && actionStep === actionSequence.length) {
+      if (actionStep === actionSequence.length - 1 && animationStep === nodes.length - 1) {
         // If the user hits play and we have already played from beginning to end then we reset.
         actionStep = 0;
         animationStep = -1;
@@ -269,6 +272,32 @@ class Diagram extends Component {
     });
   }
 
+  selectAction(action) {
+    let startPlayback = false;
+
+    this.setState((state) => {
+      let actionSequence;
+
+      if (action === 'all') {
+        actionSequence = ALL_SEQUENCES;
+      } else {
+        actionSequence = [action];
+      }
+
+      if (state.playLoopId === null) {
+        // Start playback.
+        startPlayback = true;
+      }
+
+      console.log(actionSequence);
+      return { actionSequence, actionStep: 0, animationStep: -1 };
+    }, () => {
+      if (startPlayback) {
+        this.startPlayLoop();
+      }
+    });
+  }
+
   render() {
     const width = 1024;
     const height = 500;
@@ -284,6 +313,8 @@ class Diagram extends Component {
               <SimplifiedDiagram highlights={highlights} />
             </g>
           </svg>
+
+          <ActionButtons selectAction={this.selectAction} />
         </div>
 
         <DiagramControls
