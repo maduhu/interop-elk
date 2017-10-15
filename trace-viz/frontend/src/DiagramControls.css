@@ -1,6 +1,10 @@
+.diagram-controls {
+  display: inline-block;
+}
 .diagram-controls__control {
   display: inline-block;
-  margin: 1em 0.25em;
-  font-size: 18px;
+  margin: 0 0.25em;
+  padding-top: 0.25em;
+  font-size: 30px;
   cursor: pointer;
 }

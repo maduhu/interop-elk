@@ -62,3 +62,6 @@
 .trace-id--selected {
   background-color: rgb(80, 200, 232);
 }
+.controls {
+  margin: 1em 0;
+}

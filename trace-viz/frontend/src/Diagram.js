@@ -105,7 +105,6 @@ class Diagram extends Component {
     this.parsePositions = this.parsePositions.bind(this);
     this.getPositions = this.getPositions.bind(this);
     this.startPositionsLoop = this.startPositionsLoop.bind(this);
-    this.stopPositionsLoop = this.stopPositionsLoop.bind(this);
 
     this.state = {
       actionSequence: ALL_SEQUENCES,
@@ -292,13 +291,6 @@ class Diagram extends Component {
     });
   }
 
-  stopPositionsLoop() {
-    this.setState((state) => {
-      window.clearInterval(state.positionsLoopId);
-      return { positionsLoopId: null };
-    });
-  }
-
   render() {
     const width = 1024;
     const height = 500;
@@ -315,17 +307,19 @@ class Diagram extends Component {
               <SimplifiedDiagram highlights={highlights} payerPosition={payerPosition} payeePosition={payeePosition} />
             </g>
           </svg>
+        </div>
+
+        <div className="controls">
+          <DiagramControls
+            isPlaying={isPlaying}
+            backward={this.backward}
+            playPause={this.playPause}
+            stop={this.stop}
+            forward={this.forward}
+          />
 
           <ActionButtons selectAction={this.selectAction} />
         </div>
-
-        <DiagramControls
-          isPlaying={isPlaying}
-          backward={this.backward}
-          playPause={this.playPause}
-          stop={this.stop}
-          forward={this.forward}
-        />
       </div>
     );
   }
