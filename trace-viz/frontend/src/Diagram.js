@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import request from 'superagent/lib/client';
 import DiagramControls from './DiagramControls';
 import SimplifiedDiagram from './SimplifiedDiagram';
 import ActionButtons from './ActionButtons';
-import { has } from './utils';
 import './Diagram.css';
 
 const ANIMATION_SEQUENCES = {
@@ -102,13 +102,24 @@ class Diagram extends Component {
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
     this.selectAction = this.selectAction.bind(this);
+    this.parsePositions = this.parsePositions.bind(this);
+    this.getPositions = this.getPositions.bind(this);
+    this.startPositionsLoop = this.startPositionsLoop.bind(this);
+    this.stopPositionsLoop = this.stopPositionsLoop.bind(this);
 
     this.state = {
       actionSequence: ALL_SEQUENCES,
       actionStep: 0,
       animationStep: -1,
+      payerPosition: null,
+      payeePosition: null,
       playLoopId: null,
+      positionsLoopId: null,
     };
+  }
+
+  componentDidMount() {
+    this.startPositionsLoop();
   }
 
   startPlayLoop() {
@@ -247,19 +258,61 @@ class Diagram extends Component {
     });
   }
 
+  parsePositions(error, response) {
+    const data = response.body;
+
+    if (error === null && data !== null) {
+      this.setState(() => {
+        const newState = {};
+
+        data.positions.forEach((position) => {
+          if (position.account.indexOf('dfsp1') > -1) {
+            newState.payerPosition = position.net;
+          } else if (position.account.indexOf('dfsp2') > -1) {
+            newState.payeePosition = position.net;
+          }
+        });
+
+        return newState;
+      });
+    } else {
+      console.error(error);
+    }
+  }
+
+  getPositions() {
+    request.get('/positions')
+      .auth('dfsp1', 'dfsp1')
+      .set('Accept', 'application/json')
+      .end(this.parsePositions);
+  }
+  startPositionsLoop() {
+    this.setState(() => {
+      return { positionsLoopId: window.setInterval(this.getPositions, 1000) };
+    });
+  }
+
+  stopPositionsLoop() {
+    this.setState((state) => {
+      window.clearInterval(state.positionsLoopId);
+      return { positionsLoopId: null };
+    });
+  }
+
   render() {
     const width = 1024;
     const height = 500;
     const zoom = this.props.zoom ? this.props.zoom : 1;
     const isPlaying = this.state.playLoopId !== null;
     const highlights = this.buildHighlights(this.state);
+    const { payerPosition, payeePosition } = this.state;
 
     return (
       <div className="architecture-diagram">
         <div className="main-diagram-container">
           <svg className="diagram-canvas" width={width} height={height}>
             <g className="diagram-zoom-container" transform={`scale(${zoom})`}>
-              <SimplifiedDiagram highlights={highlights} />
+              <SimplifiedDiagram highlights={highlights} payerPosition={payerPosition} payeePosition={payeePosition} />
             </g>
           </svg>
 
