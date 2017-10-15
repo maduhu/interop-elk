@@ -12,19 +12,38 @@
 .annotation rect,
 .node rect,
 .database path {
-  transition: fill 400ms;
+  transition: fill 200ms;
 }
-.color--lookup {
+
+.color-lookup--primary,
+.color-resolve--primary {
   fill: #d303ff;
 }
-.color--quote {
+.color-lookup--secondary,
+.color-resolve--secondary {
+  fill: #d37fff;
+}
+.color-quoteFees--primary,
+.color-quoteRoute--primary {
   fill: #ffaf07;
 }
-.color--prepare {
+.color-quoteFees--secondary,
+.color-quoteRoute--secondary {
+  fill: #ffc77a;
+}
+.color-prepare--primary {
   fill: #028aff;
 }
-.color--fulfill {
+.color-prepare--secondary {
+  fill: #7cc7ff;
+}
+.color-fulfill--primary,
+.color-notify--primary {
   fill: #2ad43a;
+}
+.color-fulfill--secondary,
+.color-notify--secondary{
+  fill: #8ad4a2;
 }
 .main-diagram-container {
   display: flex;

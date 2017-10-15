@@ -1,15 +1,7 @@
 import { PureComponent } from 'react';
+import { has } from './utils';
 
-const colorMap = {
-  lookup: 'color--lookup',
-  resolve: 'color--resolve',
-  quoteFees: 'color--quote',
-  quoteRoute: 'color--quote',
-  prepare: 'color--prepare',
-  fulfill: 'color--fulfill',
-};
-
-class Annotation extends PureComponent {
+class Icon extends PureComponent {
   constructor(props) {
     super(props);
     this.getColorClass = this.getColorClass.bind(this);
@@ -18,12 +10,8 @@ class Annotation extends PureComponent {
   getColorClass() {
     const { name, highlights } = this.props;
 
-    if (highlights[name]) {
-      return colorMap[highlights[name].action];
-    }
-
-    return '';
+    return has.call(highlights, name) ? highlights[name] : '';
   }
 }
 
-export default Annotation;
+export default Icon;

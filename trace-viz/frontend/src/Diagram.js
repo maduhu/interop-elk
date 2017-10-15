@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import DiagramControls from './DiagramControls';
 import SimplifiedDiagram from './SimplifiedDiagram';
-import TraceIdList from './TraceIdList';
 import { has } from './utils';
-import { Client } from 'elasticsearch';
 import './Diagram.css';
 
-const animationSequences = {
-  blank: [
-    // This is used so we can let animations play out between "actions"
-    [],
-  ],
+const ANIMATION_SEQUENCES = {
   lookup: [
     // These should be highlighted purple
     ['payer-dfsp-logic'],
@@ -81,6 +75,8 @@ const animationSequences = {
     ['central-ist'],
     ['central-ledger-db-dot'],
     ['central-ledger-db'],
+  ],
+  notify: [
     ['payer-notify-fulfillment', 'payee-notify-fulfillment'],
     ['payer-dfsp-connector', 'payee-dfsp-connector'],
     ['payer-ledger-adapter-dot', 'payee-ledger-adapter-dot'],
@@ -93,137 +89,24 @@ const animationSequences = {
   ],
 };
 
+const ALL_SEQUENCES = ['lookup', 'resolve', 'quoteFees', 'quoteRoute', 'prepare', 'fulfill', 'notify'];
+
 class Diagram extends Component {
   constructor(props) {
     super(props);
-    this.cleanUp = this.cleanUp.bind(this);
-    this.startTraceIdsLoop = this.startTraceIdsLoop.bind(this);
-    this.startCleanUpLoop = this.startCleanUpLoop.bind(this);
-    this.parseTraceIds = this.parseTraceIds.bind(this);
-    this.getTraceIds = this.getTraceIds.bind(this);
-    this.parseTraceData = this.parseTraceData.bind(this);
-    this.getTraceData = this.getTraceData.bind(this);
     this.startPlayLoop = this.startPlayLoop.bind(this);
     this.stopPlayLoop = this.stopPlayLoop.bind(this);
     this.playPause = this.playPause.bind(this);
     this.backward = this.backward.bind(this);
     this.forward = this.forward.bind(this);
     this.stop = this.stop.bind(this);
-    this.traceIdSelected = this.traceIdSelected.bind(this);
-    this.client = new Client({ host: 'localhost:9200' });
 
     this.state = {
-      traceId: null, // Good test id: 5e97e69e-93af-4b13-acdd-a60bb790a3bf
-      traceIds: null,
-      actionSequence: null,
+      actionSequence: ALL_SEQUENCES,
       actionStep: 0,
       animationStep: -1,
-      highlights: {},
       playLoopId: null,
-      cleanupLoopId: null,
-      traceIdsLoopId: null,
     };
-  }
-
-  componentDidMount() {
-    this.getTraceIds();
-    this.startCleanUpLoop();
-    this.startTraceIdsLoop();
-  }
-
-  cleanUp() {
-    this.setState((state) => {
-      if (state.actionSequence) {
-        const { actionSequence, actionStep, animationStep, highlights } = state;
-        const now = new Date();
-        const newHighlights = {};
-        const currentAction = actionSequence[actionStep];
-        let currentNodes = [];
-
-        if (currentAction && animationStep > -1) {
-          currentNodes = animationSequences[currentAction][animationStep];
-        }
-
-        Object.keys(highlights).forEach((node) => {
-          // Only keep highlights if they're the current node (playback is paused) or if it is less than a second old.
-          if (currentNodes.indexOf(node) > -1 || now - highlights[node].time < 1000) {
-            newHighlights[node] = highlights[node];
-          }
-        });
-
-        return { highlights: newHighlights };
-      }
-
-      return {};
-    });
-  }
-
-  startTraceIdsLoop() {
-    this.setState({ traceIdsLoopId: window.setInterval(this.getTraceIds, 5000) });
-  }
-
-  startCleanUpLoop() {
-    this.setState({ cleanupLoopId: window.setInterval(this.cleanUp, 100) });
-  }
-
-  parseTraceIds(data) {
-    let loadTraceData = false;
-
-    this.setState((state) => {
-      const newState = {};
-      const traceIdMap = {};
-      const traceIdList = [];
-
-      data.hits.hits.forEach((hit) => {
-        const source = hit._source; // eslint-disable-line no-underscore-dangle
-        const traceId = source.l1p_trace_id;
-
-        if (!has.call(traceIdMap, traceId)) {
-          // The trace data is sorted in ascending order so we can assume the first traceId we see is the newest one.
-          traceIdMap[traceId] = true;
-          traceIdList.push(traceId);
-        }
-      });
-
-      newState.traceIds = traceIdList;
-
-      if (state.traceId === null) {
-        newState.traceId = traceIdList[0];
-        loadTraceData = true;
-      }
-
-      return newState;
-    }, () => {
-      if (loadTraceData) {
-        this.getTraceData();
-      }
-    });
-  }
-
-  getTraceIds() {
-    this.client.search({
-      index: 'l1p_index_*',
-      body: {
-        size: 50,
-        sort: {
-          '@timestamp': { order: 'desc' },
-        },
-        query: {
-          bool: {
-            // We are only interested in data that has a traceId and a callType associated.
-            must: [{
-              exists: {
-                field: 'l1p_trace_id',
-              },
-            }, {
-              exists: {
-                field: 'l1p_call_type',
-              },
-            }],
-          },
-        },
-      },
-    }).then(this.parseTraceIds);
   }
 
   parseTraceData(data) {
@@ -275,22 +158,6 @@ class Diagram extends Component {
     }, this.playPause);
   }
 
-  getTraceData() {
-    this.client.search({
-      index: 'l1p_index_*',
-      body: {
-        size: 1500,
-        sort: {
-          '@timestamp': { order: 'asc' },
-        },
-        query: {
-          query_string: {
-            query: `l1p_trace_id:"${this.state.traceId}"`,
-          },
-        },
-      },
-    }).then(this.parseTraceData);
-  }
 
   startPlayLoop() {
     this.setState((state) => {
@@ -307,7 +174,7 @@ class Diagram extends Component {
       return {
         actionStep,
         animationStep,
-        playLoopId: window.setInterval(this.forward, 400),
+        playLoopId: window.setInterval(this.forward, 250),
       };
     });
   }
@@ -315,7 +182,7 @@ class Diagram extends Component {
   stopPlayLoop() {
     this.setState((state) => {
       window.clearInterval(state.playLoopId);
-      return { playLoopId: null, highlights: {} };
+      return { playLoopId: null };
     });
   }
 
@@ -327,104 +194,87 @@ class Diagram extends Component {
     }
   }
 
+  buildHighlights() {
+    const { actionStep, animationStep, actionSequence } = this.state;
+    const action = actionSequence[actionStep];
+    const currentNodes = ANIMATION_SEQUENCES[action];
+
+    if (animationStep > -1) {
+      const highlightedNodes = currentNodes.slice(0, animationStep + 1);
+
+      return highlightedNodes.reduce((h, nodes, i) => {
+        const isLastNode = i === highlightedNodes.length - 1;
+        const color = isLastNode ? `color-${action}--primary` : `color-${action}--secondary`;
+
+        nodes.forEach((node) => {
+          h[node] = color; // eslint-disable-line no-param-reassign
+        });
+
+        return h;
+      }, {});
+    }
+
+    return {};
+  }
+
   backward() {
     this.setState((state) => {
-      let { actionStep, animationStep } = state;
-      const highlights = { ...state.highlights };
+      let { actionStep, animationStep, playLoopId } = state;
+      const isFirstAnimationStep = animationStep === -1;
+      const isFirstActionStep = actionStep === 0;
 
-      if (animationStep === -1 && actionStep === 0) {
-        // We're as far back as we can go, do nothing.
-        return {};
-      }
-
-      const actionSequence = state.actionSequence;
-
-      animationStep -= 1;
-
-      if (animationStep === -1 && actionStep > 0) {
+      if (isFirstAnimationStep && isFirstActionStep) {
+        window.clearInterval(playLoopId);
+        playLoopId = null;
+      } else if (isFirstAnimationStep) {
         actionStep -= 1;
-        const action = actionSequence[actionStep];
-        const animationSequence = animationSequences[action];
-        animationStep = animationSequence.length - 1;
+        const action = state.actionSequence[actionStep];
+        const nodes = ANIMATION_SEQUENCES[action];
+        animationStep = nodes.length - 1;
+      } else {
+        animationStep -= 1;
       }
 
-      const action = actionSequence[actionStep];
-      const nodes = animationSequences[action][animationStep];
-
-      nodes.forEach((node) => {
-        highlights[node] = { action, time: new Date() };
-      });
-
-      return { actionStep, animationStep, highlights };
+      return { actionStep, animationStep, playLoopId };
     });
   }
 
   forward() {
     this.setState((state) => {
-      let { actionStep, animationStep } = state;
+      let { actionStep, animationStep, playLoopId } = state;
       const actionSequence = state.actionSequence;
-      const highlights = { ...state.highlights };
-      let action = actionSequence[actionStep];
-      const animationSequence = animationSequences[action];
+      const action = actionSequence[actionStep];
+      const currentNodes = ANIMATION_SEQUENCES[action];
+      const isLastAnimationStep = animationStep === currentNodes.length - 1;
+      const isLastActionStep = actionStep === actionSequence.length - 1;
 
-      if (actionStep === actionSequence.length) {
-        // Do nothing if we've gotten to the end of all our steps.
-        return {};
-      }
-
-      animationStep += 1;
-
-      if (animationStep === animationSequence.length) {
-        animationStep = 0;
+      if (isLastAnimationStep && isLastActionStep) {
+        window.clearInterval(playLoopId);
+        playLoopId = null;
+      } else if (isLastAnimationStep) {
         actionStep += 1;
+        animationStep = -1;
+      } else {
+        animationStep += 1;
       }
 
-      if (actionStep === actionSequence.length) {
-        window.clearInterval(state.playLoopId);
-        return { actionStep, animationStep, playLoopId: null };
-      }
-
-      action = actionSequence[actionStep];
-      const nodes = animationSequences[action][animationStep];
-
-      nodes.forEach((node) => {
-        highlights[node] = { action, time: new Date() };
-      });
-
-      return { actionStep, animationStep, highlights };
+      return { actionStep, animationStep, playLoopId };
     });
   }
 
   stop() {
     this.setState((state) => {
       window.clearInterval(state.playLoopId);
-      return { playLoopId: null, actionStep: 0, animationStep: -1 };
-    }, this.reset);
-  }
-
-  traceIdSelected(traceId) {
-    this.setState((state) => {
-      window.clearInterval(state.playLoopId);
-      return { traceId, playLoopId: null, actionStep: 0, animationStep: -1 };
-    }, this.getTraceData);
+      return { playLoopId: null, actionStep: 0, animationStep: -1, highlights: {} };
+    });
   }
 
   render() {
-    /*
-    Idea for phasing out older highlights later
-      - Store highlights as an object
-        - keys are icon names
-        - values are arrays of: timestamp when icon updated, action name
-      - During loop build up highlight object and store it on this.state
-      - Have a separate loop that checks the highlight map and clears any highlights that are older than 1 second,
-        except when the highlight is the current active step. Might want to store current step (names + action) on
-        state object as well to make this logic easier.
-     */
     const width = 1024;
     const height = 500;
     const zoom = this.props.zoom ? this.props.zoom : 1;
     const isPlaying = this.state.playLoopId !== null;
-    const highlights = this.state.highlights;
+    const highlights = this.buildHighlights(this.state);
 
     return (
       <div className="architecture-diagram">
@@ -434,12 +284,6 @@ class Diagram extends Component {
               <SimplifiedDiagram highlights={highlights} />
             </g>
           </svg>
-
-          <TraceIdList
-            traceIds={this.state.traceIds}
-            currentTraceId={this.state.traceId}
-            traceIdSelected={this.traceIdSelected}
-          />
         </div>
 
         <DiagramControls
