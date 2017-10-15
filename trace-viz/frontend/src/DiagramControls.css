@@ -1,4 +1,6 @@
 .diagram-controls__control {
   display: inline-block;
   margin: 1em 0.25em;
+  font-size: 18px;
+  cursor: pointer;
 }
