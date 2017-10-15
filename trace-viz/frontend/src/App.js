@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-// import Header from './Header';
 import Diagram from './Diagram';
-import Positions from './Positions';
 import './App.css';
 
 class App extends Component {
